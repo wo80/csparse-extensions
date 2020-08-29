@@ -24,14 +24,6 @@ namespace CSparse.Solvers
         IterationStatus _status = IterationStatus.Continue;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Iterator{T}"/> class with the default stop criteria.
-        /// </summary>
-        //public Iterator()
-        //{
-        //    _stopCriteria = new List<IIterationStopCriterion<T>>(Matrix<T>.Build.IterativeSolverStopCriteria());
-        //}
-
-        /// <summary>
         /// Initializes a new instance of the <see cref="Iterator{T}"/> class with the specified stop criteria.
         /// </summary>
         /// <param name="stopCriteria">
@@ -42,7 +34,7 @@ namespace CSparse.Solvers
         {
             if (!stopCriteria.Any())
             {
-                throw new ArgumentException("Stop criteria missing.");
+                throw new ArgumentException("No stop criterion specified.");
             }
 
             _stopCriteria = new List<IIterationStopCriterion<T>>(stopCriteria);
@@ -59,10 +51,18 @@ namespace CSparse.Solvers
         {
             if (!stopCriteria.Any())
             {
-                throw new ArgumentException("Stop criteria missing.");
+                throw new ArgumentException("No stop criterion specified.");
             }
 
             _stopCriteria = new List<IIterationStopCriterion<T>>(stopCriteria);
+        }
+
+        /// <summary>
+        /// Gets the list of stop criteria.
+        /// </summary>
+        public IEnumerable<IIterationStopCriterion<T>> StopCriteria
+        {
+            get { return _stopCriteria; }
         }
 
         /// <summary>
