@@ -1,0 +1,41 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFrameworks>netstandard2.0</TargetFrameworks>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <PackageId>CSparse.Extensions</PackageId>
+    <Summary>Extensions for CSparse.NET</Summary>
+    <Description>Dense factorizations and iterative solvers for real and complex linear systems.</Description>
+    <Product>CSparse.Extensions</Product>
+    <Company />
+    <Copyright>Copyright Christian Woltering © 2020</Copyright>
+    <Authors>Christian Woltering</Authors>
+    <AssemblyVersion>3.4.7.0</AssemblyVersion>
+    <FileVersion>3.4.7.0</FileVersion>
+    <PackageTags>math sparse matrix lu cholesky qr svd decomposition factorization iterative solver preconditioner</PackageTags>
+    <Version>3.4.7</Version>
+    <AssemblyName>CSparse.Extensions</AssemblyName>
+    <RootNamespace>CSparse</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Update="Properties\Resources.Designer.cs">
+      <DesignTime>True</DesignTime>
+      <AutoGen>True</AutoGen>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Update="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="CSparse" Version="3.4.7" />
+  </ItemGroup>
+
+</Project>
