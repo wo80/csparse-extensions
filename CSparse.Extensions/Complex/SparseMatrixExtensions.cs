@@ -1,13 +1,137 @@
+﻿
 namespace CSparse.Complex
 {
+    using CSparse.Properties;
     using CSparse.Storage;
+    using System;
     using System.Numerics;
 
     /// <summary>
-    /// <see cref="SparseMatrix"/> extension methods.
+    /// Sparse matrix extension methods.
     /// </summary>
     public static class SparseMatrixExtensions
     {
+        /// <summary>
+        /// Adds a diagonal matrix to a general sparse matrix B = A + Diag.
+        /// </summary>
+        /// <param name="matrix">The sparse matrix.</param>
+        /// <param name="diag">Array containing the matrix diagonal.</param>
+        /// <param name="result">The resulting sparse matrix.</param>
+        /// <remarks>
+        /// The <paramref name="result"/> matrix may be expanded slightly to allow for additions of
+        /// nonzero elements to previously non-existing diagonals.
+        /// </remarks>
+        public static void AddDiagonal(this CompressedColumnStorage<Complex> matrix, Complex[] diag, CompressedColumnStorage<Complex> result)
+        {
+            int rows = matrix.RowCount;
+            int columns = matrix.ColumnCount;
+
+            var ax = matrix.Values;
+            var ap = matrix.ColumnPointers;
+            var ai = matrix.RowIndices;
+
+            var bx = result.Values;
+            var bi = result.RowIndices;
+            var bp = result.ColumnPointers;
+
+            // Copy int arrays into result data structure if required.
+            if (!ReferenceEquals(matrix, result))
+            {
+                if (result.ColumnCount != columns || result.RowCount != rows)
+                {
+                    throw new ArgumentException(Resources.MatrixDimensions);
+                }
+
+                Array.Copy(ap, bp, columns + 1);
+                Array.Copy(ai, bi, ap[columns]);
+                Array.Copy(ax, bx, ap[columns]);
+            }
+
+            // Get positions of diagonal elements in data structure.
+            var diagind = matrix.FindDiagonalIndices();
+
+            // Count number of holes in diagonal and add diag(*) elements to
+            // valid diagonal entries.
+            int icount = 0;
+
+            // Support non-square matrices.
+            int size = Math.Min(rows, columns);
+
+            for (int j = 0; j < size; j++)
+            {
+                if (diagind[j] < 0)
+                {
+                    icount++;
+                }
+                else
+                {
+                    bx[diagind[j]] = ax[diagind[j]] + diag[j];
+                }
+            }
+
+            // If no diagonal elements to insert, return.
+            if (icount == 0)
+            {
+                return;
+            }
+
+            // Shift the nonzero elements if needed, to allow for created
+            // diagonal elements.
+            int k0 = bp[columns] + icount;
+
+            // Resize storage accordingly.
+            if (bi.Length < k0 || bx.Length < k0)
+            {
+                Array.Resize(ref bi, k0);
+                Array.Resize(ref bx, k0);
+            }
+
+            int columnStart, columnEnd;
+            bool test;
+
+            // Copy columns backward.
+            for (int i = columns - 1; i >= 0; i--)
+            {
+                // Go through column i.
+                columnStart = bp[i];
+                columnEnd = bp[i + 1];
+
+                bp[i + 1] = k0;
+                test = i < size && diagind[i] < 0;
+
+                for (int k = columnEnd - 1; k >= columnStart; k--)
+                {
+                    int j = bi[k];
+                    if (test && j < i)
+                    {
+                        test = false;
+                        k0--;
+                        bx[k0] = diag[i];
+                        bi[k0] = i;
+                        diagind[i] = k0;
+                    }
+                    k0--;
+                    bx[k0] = ax[k];
+                    bi[k0] = j;
+                }
+
+                // Diagonal element has not been added yet.
+                if (test)
+                {
+                    k0--;
+                    bx[k0] = diag[i];
+                    bi[k0] = i;
+                    diagind[i] = k0;
+                }
+            }
+
+            bp[0] = k0;
+
+            // Update storage references.
+            result.RowIndices = bi;
+            result.Values = bx;
+        }
+
         /// <summary>
         /// Computes the Kronecker product of this matrix with given matrix.
         /// </summary>

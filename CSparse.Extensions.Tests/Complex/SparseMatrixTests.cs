@@ -6,6 +6,12 @@
     public class SparseMatrixTests
     {
         [Test]
+        public void TestAddDiagonal()
+        {
+            Assert.Pass();
+        }
+
+        [Test]
         public void TestKroneckerProduct()
         {
             Assert.Pass();
