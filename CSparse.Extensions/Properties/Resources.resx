@@ -135,11 +135,17 @@
   <data name="MatrixDimensions" xml:space="preserve">
     <value>Matrix dimensions don't match.</value>
   </data>
+  <data name="MatrixPositiveDefinite" xml:space="preserve">
+    <value>Matrix must be symmetric positive definite.</value>
+  </data>
+  <data name="MatrixSameColumnDimension" xml:space="preserve">
+    <value>Matrices must have the same column dimension.</value>
+  </data>
+  <data name="MatrixSameRowDimension" xml:space="preserve">
+    <value>Matrices must have the same row dimension.</value>
+  </data>
   <data name="MatrixSquare" xml:space="preserve">
     <value>Matrix must be square.</value>
-  </data>
-  <data name="MatrixSymmetricPositiveDefinite" xml:space="preserve">
-    <value>Matrix must be symmetric positive definite.</value>
   </data>
   <data name="ValueNonNegative" xml:space="preserve">
     <value>Value must be non-negative.</value>

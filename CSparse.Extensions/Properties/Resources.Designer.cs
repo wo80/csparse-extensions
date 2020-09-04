@@ -115,20 +115,38 @@ namespace CSparse.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Matrix must be symmetric positive definite..
+        /// </summary>
+        internal static string MatrixPositiveDefinite {
+            get {
+                return ResourceManager.GetString("MatrixPositiveDefinite", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matrices must have the same column dimension..
+        /// </summary>
+        internal static string MatrixSameColumnDimension {
+            get {
+                return ResourceManager.GetString("MatrixSameColumnDimension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Matrices must have the same row dimension..
+        /// </summary>
+        internal static string MatrixSameRowDimension {
+            get {
+                return ResourceManager.GetString("MatrixSameRowDimension", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Matrix must be square..
         /// </summary>
         internal static string MatrixSquare {
             get {
                 return ResourceManager.GetString("MatrixSquare", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to Matrix must be symmetric positive definite..
-        /// </summary>
-        internal static string MatrixSymmetricPositiveDefinite {
-            get {
-                return ResourceManager.GetString("MatrixSymmetricPositiveDefinite", resourceCulture);
             }
         }
         
