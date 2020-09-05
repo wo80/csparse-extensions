@@ -137,7 +137,57 @@ namespace CSparse.Double.Factorization
             }
         }
 
-        private static void DoFactorize(int n, double[] a)
+        /// <summary>
+        /// Compute the inverse using the current Cholesky factorization.
+        /// </summary>
+        /// <param name="target">The target matrix containing the inverse on output.</param>
+        public void Inverse(DenseMatrix target)
+        {
+            if (target.RowCount != size || target.ColumnCount != size)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions);
+            }
+
+            DoInvert(size, L.Values, target.Values);
+        }
+
+        private void DoInvert(int n, double[] L, double[] a)
+        {
+            // Inverts the lower triangular system and saves the result
+            // in the upper triangle to minimize cache misses.
+            for (int i = 0; i < n; i++)
+            {
+                double diag = L[i * n + i];
+                for (int j = 0; j <= i; j++)
+                {
+                    double sum = (i == j) ? 1.0 : 0;
+                    for (int k = i - 1; k >= j; k--)
+                    {
+                        sum -= L[i * n + k] * a[j * n + k];
+                    }
+                    a[j * n + i] = sum / diag;
+                }
+            }
+
+            // Solve the system and handle the previous solution being
+            // in the upper triangle takes advantage of symmetry.
+            for (int i = n - 1; i >= 0; i--)
+            {
+                double diag = L[i * n + i];
+
+                for (int j = 0; j <= i; j++)
+                {
+                    double sum = (i < j) ? 0 : a[j * n + i];
+                    for (int k = i + 1; k < n; k++)
+                    {
+                        sum -= L[k * n + i] * a[j * n + k];
+                    }
+                    a[i * n + j] = a[j * n + i] = sum / diag;
+                }
+            }
+        }
+
+        private void DoFactorize(int n, double[] a)
         {
             double diag, invdiag = 0.0;
 

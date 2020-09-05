@@ -5,6 +5,7 @@ namespace CSparse.Complex.Factorization
     using CSparse.Properties;
     using CSparse.Storage;
     using System;
+    using System.Globalization;
     using System.Numerics;
 
     /// <summary>
@@ -137,7 +138,48 @@ namespace CSparse.Complex.Factorization
             }
         }
 
-        private static void DoFactorize(int n, Complex[] a)
+        /// <summary>
+        /// Compute the inverse using the current Cholesky factorization.
+        /// </summary>
+        /// <param name="target">The target matrix containing the inverse on output.</param>
+        public void Inverse(DenseMatrix target)
+        {
+            if (target.RowCount != size || target.ColumnCount != size)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions);
+            }
+
+            DoInvert(target.Values);
+        }
+
+        private void DoInvert(Complex[] a)
+        {
+            int n = size;
+
+            // Make temp array class member?
+            var temp = new Complex[n];
+
+            var t = L.Values;
+
+            for (int j = 0; j < n; j++)
+            {
+                // Unit vector.
+                temp[j] = Complex.One;
+
+                DenseSolverHelper.SolveLowerTransposeCholesky(n, t, temp);
+                DenseSolverHelper.SolveLowerCholesky(n, t, temp);
+
+                for (int i = 0; i < n; i++)
+                {
+                    a[i * n + j] = temp[i];
+
+                    // Clear vector.
+                    temp[i] = Complex.Zero;
+                }
+            }
+        }
+
+        private void DoFactorize(int n, Complex[] a)
         {
             // Diagonal entries of Hermitian matrices are real.
             double diag, invdiag = 0.0;

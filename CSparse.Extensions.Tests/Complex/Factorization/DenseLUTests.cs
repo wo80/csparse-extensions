@@ -10,21 +10,22 @@ namespace CSparse.Tests.Complex.Factorization
     [DefaultFloatingPointTolerance(1e-12)]
     public class DenseLUTests
     {
+        private static DenseMatrix GetMatrix()
+        {
+            return DenseMatrix.OfRowMajor(3, 3, new Complex[]
+            {
+                 C(4.0, 0.0), C(-1.0, 0.0), C( 0.5, 2.0),
+                 C(2.0, 1.0), C( 3.0, 0.0), C(-1.0, 1.0),
+                 C(1.5, 0.5), C(-2.0, 0.5), C( 2.0, 0.0),
+            }) as DenseMatrix;
+        }
+
         [Test]
         public void TestSolve()
         {
-            Complex v = new Complex(4.0, 0.0);
-            Complex w = new Complex(1.0, 0.5);
-            Complex z = new Complex(0.0, 0.5);
+            var A = GetMatrix();
 
-            var A = DenseMatrix.OfRowMajor(3, 3, new Complex[]
-            {
-                   v,    w,  z,
-                 C(w),   v,  w,
-                 C(z), C(w), v
-            });
-
-            var chol = DenseLU.Create(A);
+            var solver = DenseLU.Create(A);
 
             var x = Vector.Create(3, Complex.One);
             var b = Vector.Create(3, Complex.Zero);
@@ -32,7 +33,7 @@ namespace CSparse.Tests.Complex.Factorization
 
             A.Multiply(x, b);
 
-            chol.Solve(b, r);
+            solver.Solve(b, r);
 
             // Comparing complex arrays doesn't respect the floating point tolerance.
             //CollectionAssert.AreEqual(x, r);
@@ -44,25 +45,32 @@ namespace CSparse.Tests.Complex.Factorization
         [Test]
         public void TestDeterminant()
         {
-            Complex v = new Complex(4.0, 0.0);
-            Complex w = new Complex(1.0, 0.5);
-            Complex z = new Complex(0.0, 0.5);
+            var A = GetMatrix();
 
-            var A = DenseMatrix.OfRowMajor(3, 3, new Complex[]
-            {
-                   v,    w,  z,
-                 C(w),   v,  w,
-                 C(z), C(w), v
-            });
+            var solver = DenseLU.Create(A);
 
-            var chol = DenseLU.Create(A);
-
-            Assert.AreEqual(54.0, chol.Determinant().Real);
+            Assert.AreEqual(24.5, solver.Determinant().Real);
         }
 
-        private static Complex C(Complex z)
+        [Test]
+        public void TestInvert()
         {
-            return Complex.Conjugate(z);
+            var A = GetMatrix();
+
+            var inv = new DenseMatrix(A.RowCount, A.ColumnCount);
+
+            var solver = DenseLU.Create(A);
+
+            solver.Inverse(inv);
+
+            var eye = CreateDense.Eye(A.RowCount);
+
+            Assert.IsTrue(eye.Equals(A.Multiply(inv), 1e-12));
+        }
+
+        private static Complex C(double a, double b)
+        {
+            return new Complex(a, b);
         }
     }
 }

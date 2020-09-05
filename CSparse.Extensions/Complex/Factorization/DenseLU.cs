@@ -17,13 +17,13 @@ namespace CSparse.Complex.Factorization
         /// </summary>
         /// <param name="matrix">The matrix to factorize.</param>
         /// <exception cref="ArgumentException">If <paramref name="matrix"/> is not a square matrix.</exception>
-        public static DenseCholesky Create(DenseColumnMajorStorage<Complex> matrix)
+        public static DenseLU Create(DenseColumnMajorStorage<Complex> matrix)
         {
-            var chol = new DenseCholesky(matrix.RowCount);
+            var lu = new DenseLU(matrix.RowCount, matrix.ColumnCount);
 
-            chol.Factorize(matrix);
+            lu.Factorize(matrix);
 
-            return chol;
+            return lu;
         }
 
         private readonly int rows;
@@ -73,9 +73,22 @@ namespace CSparse.Complex.Factorization
 
             sign = 1;
 
-            matrix.Values.CopyTo(LU.Values, 0);
+            CopyTranspose(rows, columns, matrix.Values, LU.Values);
 
             DoFactorize(rows, columns, LU.Values);
+        }
+
+        private void CopyTranspose(int rows, int columns, Complex[] source, Complex[] target)
+        {
+            for (int i = 0; i < rows; i++)
+            {
+                int nxi = i * columns;
+
+                for (int j = 0; j < columns; j++)
+                {
+                    target[j * columns +  i] = source[nxi + j];
+                }
+            }
         }
 
         /// <summary>
@@ -170,6 +183,37 @@ namespace CSparse.Complex.Factorization
             }
         }
 
+        /// <summary>
+        /// Compute the inverse using the current LU factorization.
+        /// </summary>
+        /// <param name="target">The target matrix containing the inverse on output.</param>
+        public void Inverse(DenseMatrix target)
+        {
+            if (target.RowCount != rows || target.ColumnCount != columns)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions);
+            }
+
+            DoInvert(target.Values);
+        }
+
+        private void DoInvert(Complex[] a)
+        {
+            int n = columns;
+
+            for (int j = 0; j < n; j++)
+            {
+                for (int i = 0; i < n; i++) temp[i] = i == j ? 1.0 : 0.0;
+
+                DoSolve(temp);
+
+                int nxj = j * n;
+
+                // Set column j of inverse.
+                for (int i = 0; i < n; i++) a[nxj + i] = temp[i];
+            }
+        }
+
         private void DoSolve(Complex[] result)
         {
             var values = LU.Values;
@@ -204,6 +248,8 @@ namespace CSparse.Complex.Factorization
 
         private void DoFactorize(int rows, int columns, Complex[] values)
         {
+            // NOTE: this implementation expects row major order!
+
             Complex[] colj = temp;
 
             for (int j = 0; j < columns; j++)
