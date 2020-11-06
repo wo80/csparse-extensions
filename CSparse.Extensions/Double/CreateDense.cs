@@ -4,7 +4,7 @@ namespace CSparse.Double
     using System;
 
     /// <summary>
-    /// Create sparse matrices.
+    /// Create dense matrices.
     /// </summary>
     public static class CreateDense
     {
@@ -14,7 +14,7 @@ namespace CSparse.Double
         /// Create a dense identity matrix.
         /// </summary>
         /// <param name="size">The size of the matrix.</param>
-        /// <returns>Sparse identity matrix.</returns>
+        /// <returns>Dense identity matrix.</returns>
         public static DenseMatrix Eye(int size)
         {
             var C = new DenseMatrix(size, size);

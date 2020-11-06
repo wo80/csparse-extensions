@@ -5,7 +5,7 @@ namespace CSparse.Complex
     using Complex = System.Numerics.Complex;
 
     /// <summary>
-    /// Create sparse matrices.
+    /// Create dense matrices.
     /// </summary>
     public static class CreateDense
     {
@@ -15,7 +15,7 @@ namespace CSparse.Complex
         /// Create a dense identity matrix.
         /// </summary>
         /// <param name="size">The size of the matrix.</param>
-        /// <returns>Sparse identity matrix.</returns>
+        /// <returns>Dense identity matrix.</returns>
         public static DenseMatrix Eye(int size)
         {
             var C = new DenseMatrix(size, size);

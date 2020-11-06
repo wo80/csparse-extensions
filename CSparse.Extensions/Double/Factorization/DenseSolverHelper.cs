@@ -6,29 +6,6 @@
     public static class DenseSolverHelper
     {
         /// <summary>
-        /// Inverts a square lower triangular matrix:  L = L<sup>-1</sup>.
-        /// </summary>
-        /// <param name="L"></param>
-        /// <param name="size"></param>
-        public static void InvertLower(int size, double[] L)
-        {
-            for (int i = 0; i < size; i++)
-            {
-                double L_ii = L[i * size + i];
-                for (int j = 0; j < i; j++)
-                {
-                    double val = 0;
-                    for (int k = j; k < i; k++)
-                    {
-                        val += L[i * size + k] * L[k * size + j];
-                    }
-                    L[i * size + j] = -val / L_ii;
-                }
-                L[i * size + i] = 1.0 / L_ii;
-            }
-        }
-
-        /// <summary>
         /// Solves for non-singular lower triangular matrices using forward substitution, b = L<sup>-1</sup>b.
         /// </summary>
         /// <param name="size">The size of the matrices.</param>
