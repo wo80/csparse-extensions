@@ -70,5 +70,66 @@
                 }
             }
         }
+
+        /// <summary>
+        /// Extract a submatrix with given set of rows and columns.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="rows">The rows to extract (passing <c>null</c> will extract all rows).</param>
+        /// <param name="columns">The columns to extract (passing <c>null</c> will extract all columns).</param>
+        /// <returns></returns>
+        public static CompressedColumnStorage<T> SubMatrix<T>(this CompressedColumnStorage<T> matrix, int[] rows, int[] columns)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            int rowCount = matrix.RowCount;
+            int columnCount = matrix.ColumnCount;
+
+            int rsize = rows?.Length ?? rowCount;
+            int csize = columns?.Length ?? columnCount;
+
+            var density = (double)matrix.NonZerosCount / (rowCount * columnCount);
+
+            var c = new CoordinateStorage<T>(rsize, csize, (int)((rsize * csize) * density));
+
+            var mask_r = new bool[rowCount];
+            var map_r = new int[rowCount];
+
+            var mask_c = new bool[columnCount];
+            var map_c = new int[columnCount];
+
+            int k = 0;
+
+            for (int i = 0; i < rsize; i++)
+            {
+                int idx = rows == null ? i : rows[i];
+
+                mask_r[idx] = true;
+                map_r[idx] = k++;
+            }
+
+            k = 0;
+
+            for (int i = 0; i < csize; i++)
+            {
+                int idx = columns == null ? i : columns[i];
+
+                mask_c[idx] = true;
+                map_c[idx] = k++;
+            }
+
+            foreach (var e in matrix.EnumerateIndexed())
+            {
+                int i = e.Item1;
+                int j = e.Item2;
+
+                if (mask_r[i] && mask_c[j])
+                {
+                    c.At(map_r[i], map_c[j], e.Item3);
+                }
+            }
+
+            return CompressedColumnStorage<T>.OfIndexed(c, true);
+        }
     }
 }
