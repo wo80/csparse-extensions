@@ -88,7 +88,7 @@
             int rsize = rows?.Length ?? rowCount;
             int csize = columns?.Length ?? columnCount;
 
-            var density = (double)matrix.NonZerosCount / (rowCount * columnCount);
+            var density = matrix.NonZerosCount / ((double)rowCount * columnCount);
 
             var c = new CoordinateStorage<T>(rsize, csize, (int)((rsize * csize) * density));
 
