@@ -123,5 +123,31 @@ namespace CSparse.Tests.Storage
 
             Assert.IsTrue(actual.Equals(expected), "test 5");
         }
+
+        [Test]
+        public void TestEliminateSymmetric()
+        {
+            var actual = SparseMatrix.OfRowMajor(5, 5, new double[]
+            {
+                2, 2, 2, 2, 2,
+                2, 2, 2, 2, 2,
+                2, 2, 2, 2, 2,
+                2, 2, 2, 2, 2,
+                2, 2, 2, 2, 2
+            });
+
+            var expected = SparseMatrix.OfRowMajor(5, 5, new double[]
+            {
+                2, 0, 2, 2, 0,
+                0, 1, 0, 0, 0,
+                2, 0, 2, 2, 0,
+                2, 0, 2, 2, 0,
+                0, 0, 0, 0, 1
+            });
+
+            actual.EliminateSymmetric(new[] { 1, 4 });
+
+            Assert.IsTrue(actual.Equals(expected));
+        }
     }
 }

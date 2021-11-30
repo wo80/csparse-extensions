@@ -1,5 +1,6 @@
 ﻿namespace CSparse
 {
+    using CSparse.Properties;
     using CSparse.Storage;
     using System;
     using System.Collections.Generic;
@@ -130,6 +131,66 @@
             }
 
             return CompressedColumnStorage<T>.OfIndexed(c, true);
+        }
+
+        /// <summary>
+        /// Eliminate equations from a linear system by setting rows and columns of the
+        /// symmetric matrix to identity (all values zero except diagonal one).
+        /// </summary>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="indices">The indices of the rows and columns to eliminate.</param>
+        public static void EliminateSymmetric<T>(this CompressedColumnStorage<T> matrix, int[] indices)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            T ZERO = Helper.ZeroOf<T>();
+            T ONE = Helper.OneOf<T>();
+
+            int n = matrix.ColumnCount;
+
+            if (n != matrix.RowCount)
+            {
+                throw new Exception(Resources.MatrixSquare);
+            }
+
+            var mask = new bool[n];
+
+            for (int i = 0; i < indices.Length; i++)
+            {
+                mask[indices[i]] = true;
+            }
+
+            var ax = matrix.Values;
+            var ap = matrix.ColumnPointers;
+            var ai = matrix.RowIndices;
+
+            for (int i = 0; i < n; i++)
+            {
+                var end = ap[i + 1];
+
+                if (mask[i])
+                {
+                    // Eliminate column.
+                    for (var j = ap[i]; j < end; j++)
+                    {
+                        ax[j] = ai[j] == i ? ONE : ZERO;
+                    }
+                }
+                else
+                {
+                    for (var j = ap[i]; j < end; j++)
+                    {
+                        int row = ai[j];
+
+                        // Eliminate row index.
+                        if (mask[row])
+                        {
+                            ax[j] = row == i ? ONE : ZERO;
+                        }
+                    }
+                }
+            }
+
+            matrix.DropZeros();
         }
     }
 }
