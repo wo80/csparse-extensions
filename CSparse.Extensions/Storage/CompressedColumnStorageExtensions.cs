@@ -44,6 +44,37 @@
         }
 
         /// <summary>
+        /// Test if any matrix entry satisfies the given predicate.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="predicate">The predicate.</param>
+        /// <returns></returns>
+        public static bool Any<T>(this CompressedColumnStorage<T> matrix, Func<int, int, T, bool> predicate)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            int columns = matrix.ColumnCount;
+
+            var ax = matrix.Values;
+            var ap = matrix.ColumnPointers;
+            var ai = matrix.RowIndices;
+
+            for (int i = 0; i < columns; i++)
+            {
+                int end = ap[i + 1];
+                for (int j = ap[i]; j < end; j++)
+                {
+                    if (predicate(ai[j], i, ax[j]))
+                    {
+                        return true;
+                    }
+                }
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Enumerate all matrix entries that match the given predicate.
         /// </summary>
         /// <typeparam name="T"></typeparam>
@@ -73,7 +104,102 @@
         }
 
         /// <summary>
-        /// Extract a submatrix with given set of rows and columns.
+        /// Extract a sub matrix from a symmetric matrix with given row and column indices.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="indices">The indices of the rows and columns to extract.</param>
+        /// <returns></returns>
+        /// <remarks>
+        /// The indices have to be in order.
+        /// </remarks>
+        public static CompressedColumnStorage<T> SubMatrix<T>(this CompressedColumnStorage<T> matrix, int[] indices)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            int n = matrix.ColumnCount;
+
+            if (n != matrix.RowCount)
+            {
+                throw new Exception(Resources.MatrixSquare);
+            }
+
+            var ax = matrix.Values;
+            var ap = matrix.ColumnPointers;
+            var ai = matrix.RowIndices;
+
+            int size = indices.Length;
+
+            int nnz = 0;
+
+            // Mask of rows/columns to extract.
+            var mask = new bool[n];
+
+            for (int i = 0, j, last = -1; i < size; i++)
+            {
+                j = indices[i];
+
+                if (j <= last)
+                {
+                    throw new ArgumentException("Indices have to be sorted.", nameof(indices));
+                }
+
+                last = j;
+
+                nnz += ap[j + 1] - ap[j];
+
+                mask[j] = true;
+            }
+
+            // Maps old row indices to new ones.
+            var map = new int[n];
+
+            for (int i = 0, j = 0; i < n; i++)
+            {
+                map[i] = j;
+
+                if (mask[i]) j++;
+            }
+
+            int diff = matrix.NonZerosCount - nnz;
+
+            var result = Create<T>(size, size, nnz - diff + n);
+
+            var bx = result.Values;
+            var bp = result.ColumnPointers;
+            var bi = result.RowIndices;
+
+            int k = 0;
+
+            for (int i = 0; i < size; i++)
+            {
+                bp[i] = k;
+
+                // Current column to copy.
+                int column = indices[i];
+
+                var end = ap[column + 1];
+
+                for (var j = ap[column]; j < end; j++)
+                {
+                    int row = ai[j];
+
+                    if (mask[row])
+                    {
+                        bi[k] = map[row];
+                        bx[k] = ax[j];
+
+                        k++;
+                    }
+                }
+            }
+
+            bp[size] = k;
+
+            return result;
+        }
+
+        /// <summary>
+        /// Extract a sub matrix with given set of rows and columns.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="matrix">The matrix.</param>
@@ -191,6 +317,24 @@
             }
 
             matrix.DropZeros();
+        }
+
+        internal static CompressedColumnStorage<T> Create<T>(int rowCount, int columnCount, int valueCount)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            if (typeof(T) == typeof(double))
+            {
+                return new CSparse.Double.SparseMatrix(rowCount, columnCount, valueCount)
+                    as CompressedColumnStorage<T>;
+            }
+
+            if (typeof(T) == typeof(System.Numerics.Complex))
+            {
+                return new CSparse.Complex.SparseMatrix(rowCount, columnCount, valueCount)
+                    as CompressedColumnStorage<T>;
+            }
+
+            throw new NotSupportedException();
         }
     }
 }
