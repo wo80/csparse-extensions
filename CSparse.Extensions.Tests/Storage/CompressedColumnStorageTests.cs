@@ -176,7 +176,9 @@ namespace CSparse.Tests.Storage
 
             // Test 4: all rows and column subset in order.
 
-            actual = A.SubMatrix(null, new[] { 1, 2 });
+            int[] ALL = null;
+
+            actual = A.SubMatrix(ALL, new[] { 1, 2 });
 
             expected = SparseMatrix.OfRowMajor(4, 2, new double[]
             {
@@ -190,7 +192,7 @@ namespace CSparse.Tests.Storage
 
             // Test 5: row subset in order and all columns.
 
-            actual = A.SubMatrix(new[] { 1, 2 }, null);
+            actual = A.SubMatrix(new[] { 1, 2 }, ALL);
 
             expected = SparseMatrix.OfRowMajor(2, 4, new double[]
             {

@@ -109,7 +109,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="matrix">The matrix.</param>
         /// <param name="indices">The indices of the rows and columns to extract.</param>
-        /// <returns></returns>
+        /// <returns>The sub matrix.</returns>
         /// <remarks>
         /// The indices have to be in order.
         /// </remarks>
@@ -123,13 +123,49 @@
                 throw new Exception(Resources.MatrixSquare);
             }
 
+            int size = indices.Length;
+
+            var mask = new HashSet<int>(indices);
+
+            int nnz = matrix.Count((i, j, _) => i > j && mask.Contains(i) && mask.Contains(j));
+
+            var result = Create<T>(size, size, 2 * nnz + size);
+
+            SubMatrix(matrix, indices, result);
+
+            return result;
+        }
+
+        /// <summary>
+        /// Extract a sub matrix from a symmetric matrix with given row and column indices.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="indices">The indices of the rows and columns to extract.</param>
+        /// <param name="target">The target sub matrix (has to provide enough mermory for the non-zeros).</param>
+        /// <remarks>
+        /// The indices have to be in order.
+        /// </remarks>
+        public static void SubMatrix<T>(this CompressedColumnStorage<T> matrix, int[] indices, CompressedColumnStorage<T> target)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            int n = matrix.ColumnCount;
+
+            if (n != matrix.RowCount)
+            {
+                throw new ArgumentException(Resources.MatrixSquare, nameof(matrix));
+            }
+
             var ax = matrix.Values;
             var ap = matrix.ColumnPointers;
             var ai = matrix.RowIndices;
 
             int size = indices.Length;
 
-            int nnz = 0;
+            if (target.RowCount != size || target.ColumnCount != size)
+            {
+                throw new ArgumentException(Resources.InvalidDimensions, nameof(target));
+            }
 
             // Mask of rows/columns to extract.
             var mask = new bool[n];
@@ -145,8 +181,6 @@
 
                 last = j;
 
-                nnz += ap[j + 1] - ap[j];
-
                 mask[j] = true;
             }
 
@@ -160,13 +194,9 @@
                 if (mask[i]) j++;
             }
 
-            int diff = matrix.NonZerosCount - nnz;
-
-            var result = Create<T>(size, size, nnz - diff + n);
-
-            var bx = result.Values;
-            var bp = result.ColumnPointers;
-            var bi = result.RowIndices;
+            var bx = target.Values;
+            var bp = target.ColumnPointers;
+            var bi = target.RowIndices;
 
             int k = 0;
 
@@ -194,8 +224,6 @@
             }
 
             bp[size] = k;
-
-            return result;
         }
 
         /// <summary>
