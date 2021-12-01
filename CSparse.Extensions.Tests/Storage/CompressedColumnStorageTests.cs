@@ -125,6 +125,28 @@ namespace CSparse.Tests.Storage
             });
 
             Assert.IsTrue(actual.Equals(expected), "test 3");
+
+            // Test 4
+
+            A = SparseMatrix.OfRowMajor(5, 5, new double[]
+            {
+                1.1, 0.0, 0.0, 0.0, 0.0,
+                1.2, 2.2, 0.0, 0.0, 0.0,
+                0.0, 2.3, 3.3, 0.0, 0.0,
+                1.4, 0.0, 3.4, 4.4, 0.0,
+                1.5, 2.5, 0.0, 4.5, 5.5
+            });
+
+            actual = A.SubMatrix(new[] { 1, 2, 3 });
+
+            expected = SparseMatrix.OfRowMajor(3, 3, new double[]
+            {
+                2.2, 0.0, 0.0,
+                2.3, 3.3, 0.0,
+                0.0, 3.4, 4.4
+            });
+
+            Assert.IsTrue(actual.Equals(expected), "test 4");
         }
 
         [Test]

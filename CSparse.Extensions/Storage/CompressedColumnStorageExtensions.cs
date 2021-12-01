@@ -111,7 +111,7 @@
         /// <param name="indices">The indices of the rows and columns to extract.</param>
         /// <returns>The sub matrix.</returns>
         /// <remarks>
-        /// The indices have to be in order.
+        /// The indices have to be in order. The method also work, if only the lower part of the input matrix is passed.
         /// </remarks>
         public static CompressedColumnStorage<T> SubMatrix<T>(this CompressedColumnStorage<T> matrix, int[] indices)
             where T : struct, IEquatable<T>, IFormattable
@@ -144,7 +144,7 @@
         /// <param name="indices">The indices of the rows and columns to extract.</param>
         /// <param name="target">The target sub matrix (has to provide enough mermory for the non-zeros).</param>
         /// <remarks>
-        /// The indices have to be in order.
+        /// The indices have to be in order. The method also work, if only the lower part of the input matrix is passed.
         /// </remarks>
         public static void SubMatrix<T>(this CompressedColumnStorage<T> matrix, int[] indices, CompressedColumnStorage<T> target)
             where T : struct, IEquatable<T>, IFormattable
