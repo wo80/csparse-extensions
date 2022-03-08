@@ -9,12 +9,12 @@
     <Description>Dense factorizations and iterative solvers for real and complex linear systems.</Description>
     <Product>CSparse.Extensions</Product>
     <Company />
-    <Copyright>Copyright Christian Woltering © 2020</Copyright>
+    <Copyright>Copyright Christian Woltering © 2020-2022</Copyright>
     <Authors>Christian Woltering</Authors>
-    <AssemblyVersion>3.5.0.0</AssemblyVersion>
-    <FileVersion>3.5.0.0</FileVersion>
+    <AssemblyVersion>3.6.0.0</AssemblyVersion>
+    <FileVersion>3.6.0.0</FileVersion>
     <PackageTags>math sparse matrix lu cholesky qr svd decomposition factorization iterative solver preconditioner</PackageTags>
-    <Version>3.5.0</Version>
+    <Version>3.6.0</Version>
     <AssemblyName>CSparse.Extensions</AssemblyName>
     <RootNamespace>CSparse</RootNamespace>
   </PropertyGroup>
