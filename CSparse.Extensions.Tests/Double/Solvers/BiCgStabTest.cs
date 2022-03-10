@@ -8,14 +8,14 @@ namespace CSparse.Extensions.Tests.Double.Solvers
     using NUnit.Framework;
     using System.Collections.Generic;
 
-    public class MinResTest
+    public class BiCgStabTest
     {
         [Test]
-        public void TestSolveSymmetricPositiveDefinite()
+        public void TestSolveUnsymmetric()
         {
             const int N = 100;
 
-            var A = CreateSparse.Laplacian(N);
+            var A = CreateSparse.Random(N, N, 0.1);
             var x = Vector.Create(N, 1.0);
             var b = new double[N];
 
@@ -29,15 +29,15 @@ namespace CSparse.Extensions.Tests.Double.Solvers
 
             Vector.Clear(x);
 
-            var solver = new MinRes();
+            var solver = new BiCgStab();
 
-            solver.Solve(A, b, x, iterator, new DiagonalPreconditioner(A));
+            solver.Solve(A, b, x, iterator, new MILU0(A));
 
             Assert.AreEqual(iterator.Status, IterationStatus.Converged);
         }
 
         [Test]
-        public void TestSolveSymmetricIndefinite()
+        public void TestSolveSymmetric()
         {
             const int N = 100;
 
@@ -49,15 +49,15 @@ namespace CSparse.Extensions.Tests.Double.Solvers
 
             var iterator = new Iterator<double>(new List<IIterationStopCriterion<double>>()
             {
-                new IterationCountStopCriterion<double>(2 * N),
-                new ResidualStopCriterion<double>(1e-4)
+                new IterationCountStopCriterion<double>(N),
+                new ResidualStopCriterion<double>(1e-8)
             });
 
             Vector.Clear(x);
 
-            var solver = new MinRes();
+            var solver = new BiCgStab();
 
-            solver.Solve(A, b, x, iterator, new DiagonalPreconditioner(A));
+            solver.Solve(A, b, x, iterator, new MILU0(A, true));
 
             Assert.AreEqual(iterator.Status, IterationStatus.Converged);
         }

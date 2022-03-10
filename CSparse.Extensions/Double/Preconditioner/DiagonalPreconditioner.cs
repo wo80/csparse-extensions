@@ -11,6 +11,11 @@ namespace CSparse.Double.Preconditioner
     /// </summary>
     public class DiagonalPreconditioner : IPreconditioner<double>
     {
+        /// <summary>
+        /// 
+        /// </summary>
+        public bool ThrowOnMissingDiagonal { get; set; }
+
         // The inverse of the matrix diagonal.
         double[] inverseDiagonal;
 
@@ -62,10 +67,17 @@ namespace CSparse.Double.Preconditioner
 
                 if (value == 0.0)
                 {
-                    throw new InvalidOperationException();
-                }
+                    if (ThrowOnMissingDiagonal)
+                    {
+                        throw new InvalidOperationException();
+                    }
 
-                inverseDiagonal[i] = 1.0 / value;
+                    inverseDiagonal[i] = 1.0;
+                }
+                else
+                {
+                    inverseDiagonal[i] = 1.0 / value;
+                }
             }
         }
 

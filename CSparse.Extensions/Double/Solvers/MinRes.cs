@@ -80,7 +80,7 @@ namespace CSparse.Double.Solvers
     public sealed class MinRes : IIterativeSolver<double>
     {
         // A tolerance on certain inner products that should be positive if M is SPD.
-        //    Set ptol in [1e-6,1e-2] (say).  See output betacheck.
+        //    Set ptol in [1e-6, 1e-2] (say).  See output betacheck.
         double ptol = 1e-6;
 
         //  An int giving the reason for termination...
@@ -151,6 +151,15 @@ namespace CSparse.Double.Solvers
         double arnorm;
         // xnorm  is the final norm(x).
         double xnorm;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="MinRes"/> class.
+        /// </summary>
+        /// <param name="ptol">A tolerance on certain inner products that should be positive if M is SPD (reasonable values in [1e-6,1e-2]).</param>
+        public MinRes(double ptol = 1e-6)
+        {
+            this.ptol = ptol;
+        }
 
         /// <inheritdoc/>
         public void Solve(ILinearOperator<double> matrix, double[] input, double[] result,
