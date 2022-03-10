@@ -31,7 +31,7 @@ namespace CSparse.Extensions.Tests.Double.Solvers
 
             var solver = new MinRes();
 
-            solver.Solve(A, b, x, iterator, new DiagonalPreconditioner(A));
+            solver.Solve(A, b, x, iterator, new Diagonal(A));
 
             Assert.AreEqual(iterator.Status, IterationStatus.Converged);
         }
@@ -57,7 +57,7 @@ namespace CSparse.Extensions.Tests.Double.Solvers
 
             var solver = new MinRes();
 
-            solver.Solve(A, b, x, iterator, new DiagonalPreconditioner(A));
+            solver.Solve(A, b, x, iterator, new Diagonal(A));
 
             Assert.AreEqual(iterator.Status, IterationStatus.Converged);
         }

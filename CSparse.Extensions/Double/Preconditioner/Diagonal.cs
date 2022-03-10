@@ -9,7 +9,7 @@ namespace CSparse.Double.Preconditioner
     /// <summary>
     /// A diagonal preconditioner.
     /// </summary>
-    public class DiagonalPreconditioner : IPreconditioner<double>
+    public class Diagonal : IPreconditioner<double>
     {
         /// <summary>
         /// 
@@ -20,12 +20,12 @@ namespace CSparse.Double.Preconditioner
         double[] inverseDiagonal;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DiagonalPreconditioner"/> class.
+        /// Initializes a new instance of the <see cref="Diagonal"/> class.
         /// </summary>
         /// <param name="matrix">The <see cref="Matrix{T}"/> upon which this preconditioner is based.</param>
         /// <exception cref="ArgumentException">If <paramref name="matrix"/> is not a square matrix.</exception>
         /// <exception cref="InvalidOperationException">If <paramref name="matrix"/> has zeros on diagonal.</exception>
-        public DiagonalPreconditioner(Matrix<double> matrix)
+        public Diagonal(Matrix<double> matrix)
         {
             int rows = matrix.RowCount;
 
