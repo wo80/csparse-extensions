@@ -1,8 +1,9 @@
 ﻿
-namespace CSparse.Double.Solvers
+namespace CSparse.Complex.Solvers
 {
     using CSparse.Solvers;
     using System;
+    using System.Numerics;
 
     /// <summary>
     /// BiCGStab algorithm.
@@ -11,7 +12,7 @@ namespace CSparse.Double.Solvers
     /// Based on Hypre code: https://github.com/hypre-space/hypre
     /// SPDX-License-Identifier: (Apache-2.0 OR MIT)
     /// </remarks>
-    public class BiCgStab : IIterativeSolver<double>
+    public class BiCgStab : IIterativeSolver<Complex>
     {
         private const double TINY = 1.0e-128;
 
@@ -44,11 +45,11 @@ namespace CSparse.Double.Solvers
         /// <param name="result">The result <see cref="Vector"/>, <c>x</c>.</param>
         /// <param name="iterator">The iterator to use to control when to stop iterating.</param>
         /// <param name="preconditioner">The preconditioner to use for approximations.</param>
-        public void Solve(ILinearOperator<double> matrix, double[] input, double[] result,
-            Iterator<double> iterator, IPreconditioner<double> preconditioner)
+        public void Solve(ILinearOperator<Complex> matrix, Complex[] input, Complex[] result,
+            Iterator<Complex> iterator, IPreconditioner<Complex> preconditioner)
         {
             var A = matrix;
-            var M = preconditioner ?? new UnitPreconditioner<double>(matrix);
+            var M = preconditioner ?? new UnitPreconditioner<Complex>(matrix);
 
             var b = input;
             var x = result;
@@ -57,21 +58,21 @@ namespace CSparse.Double.Solvers
 
             int n = b.Length;
 
-            double[] r = new double[n];
-            double[] r0 = new double[n];
-            double[] s = new double[n];
-            double[] v = new double[n];
-            double[] p = new double[n];
-            double[] q = new double[n];
+            var r = new Complex[n];
+            var r0 = new Complex[n];
+            var s = new Complex[n];
+            var v = new Complex[n];
+            var p = new Complex[n];
+            var q = new Complex[n];
 
-            double alpha, beta, gamma, temp, res;
+            Complex alpha, beta, gamma, temp, res;
             double epsilon, r_norm, b_norm;
             //double cf_ave_0 = 0.0;
             //double cf_ave_1 = 0.0;
             //double weight;
             double r_norm_0;
             double den_norm;
-            double gamma_numer;
+            Complex gamma_numer;
             double gamma_denom;
 
             // Initialize work arrays
@@ -85,7 +86,7 @@ namespace CSparse.Double.Solvers
             b_norm = Vector.Norm(n, b);
 
             res = Vector.DotProduct(n, r0, r0);
-            r_norm = Math.Sqrt(res);
+            r_norm = Math.Sqrt(res.Real);
             r_norm_0 = r_norm;
 
             int i = 0;
@@ -124,7 +125,7 @@ namespace CSparse.Double.Solvers
                 M.Apply(p, v);
                 A.Multiply(v, q);
                 temp = Vector.DotProduct(n, r0, q);
-                if (Math.Abs(temp) < TINY)
+                if (temp.Magnitude < TINY)
                 {
                     iterator.Status = IterationStatus.Failure; // TODO: numerical breakdown
                     return;
@@ -137,10 +138,10 @@ namespace CSparse.Double.Solvers
                 A.Multiply(v, s);
                 // Handle case when gamma = 0.0/0.0 as 0.0 and not NAN */
                 gamma_numer = Vector.DotProduct(n, r, s);
-                gamma_denom = Vector.DotProduct(n, s, s);
-                if ((gamma_numer == 0.0) && (gamma_denom == 0.0))
+                gamma_denom = Vector.DotProduct(n, s, s).Real;
+                if ((gamma_numer == Complex.Zero) && (gamma_denom == 0.0))
                 {
-                    gamma = 0.0;
+                    gamma = Complex.Zero;
                 }
                 else
                 {
@@ -165,7 +166,7 @@ namespace CSparse.Double.Solvers
                     }
                 }
 
-                if (Math.Abs(res) < TINY)
+                if (Complex.Abs(res) < TINY)
                 {
                     iterator.Status = IterationStatus.Failure; // TODO: numerical breakdown
                     return;
@@ -176,7 +177,7 @@ namespace CSparse.Double.Solvers
                 beta *= res;
                 Vector.Axpy(-gamma, q, p);
 
-                if (Math.Abs(gamma) < TINY)
+                if (Complex.Abs(gamma) < TINY)
                 {
                     iterator.Status = IterationStatus.Failure; // TODO: numerical breakdown
                     return;
