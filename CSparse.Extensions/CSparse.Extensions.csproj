@@ -11,10 +11,10 @@
     <Company />
     <Copyright>Copyright Christian Woltering © 2020-2022</Copyright>
     <Authors>Christian Woltering</Authors>
-    <AssemblyVersion>3.6.0.0</AssemblyVersion>
-    <FileVersion>3.6.0.0</FileVersion>
+    <AssemblyVersion>3.7.0.0</AssemblyVersion>
+    <FileVersion>3.7.0.0</FileVersion>
     <PackageTags>math sparse matrix lu cholesky qr svd decomposition factorization iterative solver preconditioner</PackageTags>
-    <Version>3.6.0</Version>
+    <Version>3.7.0</Version>
     <AssemblyName>CSparse.Extensions</AssemblyName>
     <RootNamespace>CSparse</RootNamespace>
   </PropertyGroup>
@@ -35,7 +35,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="CSparse" Version="3.6.0" />
+    <PackageReference Include="CSparse" Version="3.7.0" />
   </ItemGroup>
 
 </Project>
