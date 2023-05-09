@@ -113,6 +113,9 @@ namespace CSparse.Double
 
             for (int i = 0; i < rows; i++)
             {
+                // Make sure diagonal is set.
+                C.At(i, i, 1.0);
+
                 for (int j = 0; j < nz; j++)
                 {
                     int k = Math.Min(columns - 1, (int)(random.NextDouble() * columns));

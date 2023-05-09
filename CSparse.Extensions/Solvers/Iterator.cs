@@ -24,6 +24,11 @@ namespace CSparse.Solvers
         IterationStatus _status = IterationStatus.Continue;
 
         /// <summary>
+        /// The number of iterations taken.
+        /// </summary>
+        int _iterations = 0;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="Iterator{T}"/> class with the specified stop criteria.
         /// </summary>
         /// <param name="stopCriteria">
@@ -92,7 +97,9 @@ namespace CSparse.Solvers
                 throw new ArgumentOutOfRangeException(nameof(iterationNumber));
             }
 
-            // While we're cancelled we don't call on the stop-criteria.
+            _iterations = iterationNumber;
+
+            // While we're canceled we don't call on the stop-criteria.
             if (_status == IterationStatus.Cancelled)
             {
                 return _status;
@@ -118,7 +125,7 @@ namespace CSparse.Solvers
         }
 
         /// <summary>
-        /// Indicates to the iterator that the iterative process has been cancelled.
+        /// Indicates to the iterator that the iterative process has been canceled.
         /// </summary>
         /// <remarks>
         /// Does not reset the stop-criteria.
