@@ -10,7 +10,7 @@ namespace CSparse.Tests.Complex.Factorization
     [DefaultFloatingPointTolerance(1e-12)]
     public class DenseLUTests
     {
-        private static DenseMatrix GetMatrix()
+        internal static DenseMatrix GetMatrix()
         {
             return DenseMatrix.OfRowMajor(3, 3, new Complex[]
             {
@@ -53,7 +53,7 @@ namespace CSparse.Tests.Complex.Factorization
         }
 
         [Test]
-        public void TestInvert()
+        public void TestInverse()
         {
             var A = GetMatrix();
 
@@ -68,7 +68,7 @@ namespace CSparse.Tests.Complex.Factorization
             Assert.IsTrue(eye.Equals(A.Multiply(inv), 1e-12));
         }
 
-        private static Complex C(double a, double b)
+        private static Complex C(double a, double b = 0.0)
         {
             return new Complex(a, b);
         }

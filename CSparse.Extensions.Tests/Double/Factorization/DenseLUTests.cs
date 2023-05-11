@@ -8,7 +8,7 @@ namespace CSparse.Tests.Double.Factorization
     [DefaultFloatingPointTolerance(1e-12)]
     public class DenseLUTests
     {
-        private static DenseMatrix GetMatrix()
+        internal static DenseMatrix GetMatrix()
         {
             return DenseMatrix.OfRowMajor(3, 3, new double[]
             {
@@ -47,7 +47,7 @@ namespace CSparse.Tests.Double.Factorization
         }
 
         [Test]
-        public void TestInvert()
+        public void TestInverse()
         {
             var A = GetMatrix();
 

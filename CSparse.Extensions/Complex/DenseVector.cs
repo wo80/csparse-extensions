@@ -25,6 +25,21 @@ namespace CSparse.Complex
         {
         }
 
+        #region Public static functions
+
+        /// <summary>
+        /// Create a new dense vector.
+        /// </summary>
+        /// <param name="count">The vector dimension.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public static DenseVector Create(int count, Complex value)
+        {
+            return new DenseVector(count, Vector.Create(count, value));
+        }
+
+        #endregion
+
         /// <inheritdoc />
         public override void Add(DenseVector<Complex> other, DenseVector<Complex> target)
         {

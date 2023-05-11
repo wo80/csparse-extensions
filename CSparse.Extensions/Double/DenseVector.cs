@@ -24,6 +24,21 @@ namespace CSparse.Double
         {
         }
 
+        #region Public static functions
+
+        /// <summary>
+        /// Create a new dense vector.
+        /// </summary>
+        /// <param name="count">The vector dimension.</param>
+        /// <param name="value">The value.</param>
+        /// <returns></returns>
+        public static DenseVector Create(int count, double value)
+        {
+            return new DenseVector(count, Vector.Create(count, value));
+        }
+
+        #endregion
+
         /// <inheritdoc />
         public override void Add(DenseVector<double> other, DenseVector<double> target)
         {
