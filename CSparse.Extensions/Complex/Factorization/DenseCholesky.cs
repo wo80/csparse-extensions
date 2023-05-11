@@ -5,7 +5,6 @@ namespace CSparse.Complex.Factorization
     using CSparse.Properties;
     using CSparse.Storage;
     using System;
-    using System.Globalization;
     using System.Numerics;
 
     /// <summary>
@@ -16,6 +15,25 @@ namespace CSparse.Complex.Factorization
     /// </remarks>
     public class DenseCholesky : ISolver<Complex>
     {
+        private readonly int size;
+        private readonly DenseColumnMajorStorage<Complex> L;
+
+        /// <summary>
+        /// Gets the number of rows and columns.
+        /// </summary>
+        public int Size => size;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DenseCholesky"/> class.
+        /// </summary>
+        /// <param name="size"></param>
+        public DenseCholesky(int size)
+        {
+            this.size = size;
+
+            L = new DenseMatrix(size, size);
+        }
+
         /// <summary>
         /// Compute the Cholesky factorization of given matrix.
         /// </summary>
@@ -29,20 +47,6 @@ namespace CSparse.Complex.Factorization
             chol.Factorize(matrix);
 
             return chol;
-        }
-
-        private readonly int size;
-        private DenseColumnMajorStorage<Complex> L;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DenseCholesky"/> class.
-        /// </summary>
-        /// <param name="size"></param>
-        public DenseCholesky(int size)
-        {
-            this.size = size;
-
-            L = new DenseMatrix(size, size);
         }
 
         /// <summary>
@@ -83,10 +87,10 @@ namespace CSparse.Complex.Factorization
         }
 
         /// <summary>
-        /// Solves a system of linear equations, <b>Ax = b</b>.
+        /// Solves a system of linear equations <b>Ax = b</b>.
         /// </summary>
-        /// <param name="input">The right hand side vector, <b>b</b>.</param>
-        /// <param name="result">The left hand side vector, <b>x</b>.</param>
+        /// <param name="input">The right hand side vector <b>b</b>.</param>
+        /// <param name="result">The left hand side vector <b>x</b>.</param>
         public void Solve(Complex[] input, Complex[] result)
         {
             input.CopyTo(result, 0);
@@ -99,11 +103,11 @@ namespace CSparse.Complex.Factorization
         }
 
         /// <summary>
-        /// Solves a system of linear equations, <b>AX = B</b>.
+        /// Solves a system of linear equations <b>AX = B</b>.
         /// </summary>
-        /// <param name="input">The right hand side <see cref="DenseMatrix"/>, <b>B</b>.</param>
-        /// <param name="result">The left hand side <see cref="DenseMatrix"/>, <b>X</b>.</param>
-        public void Solve(DenseMatrix input, DenseMatrix result)
+        /// <param name="input">The right hand side matrix <b>B</b>.</param>
+        /// <param name="result">The left hand side matrix <b>X</b>.</param>
+        public void Solve(DenseColumnMajorStorage<Complex> input, DenseColumnMajorStorage<Complex> result)
         {
             int columns = input.ColumnCount;
 
