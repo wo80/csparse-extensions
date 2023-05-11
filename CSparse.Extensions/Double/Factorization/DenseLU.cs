@@ -195,8 +195,8 @@ namespace CSparse.Double.Factorization
         /// <summary>
         /// Compute the inverse using the current LU factorization.
         /// </summary>
-        /// <param name="target">The target matrix containing the inverse on output.</param>
-        public void Inverse(DenseMatrix target)
+        /// <param name="target">The target matrix containing the inverse on return.</param>
+        public void Inverse(DenseColumnMajorStorage<double> target)
         {
             if (target.RowCount != rows || target.ColumnCount != columns)
             {
