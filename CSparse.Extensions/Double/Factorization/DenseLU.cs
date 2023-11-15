@@ -131,6 +131,12 @@ namespace CSparse.Double.Factorization
         /// <inheritdoc/>
         public void Solve(double[] input, double[] result)
         {
+            Solve(input.AsSpan(), result.AsSpan());
+        }
+
+        /// <inheritdoc/>
+        public void Solve(ReadOnlySpan<double> input, Span<double> result)
+        {
             if (input.Length < rows)
             {
                 throw new ArgumentException(Resources.MatrixDimensions, nameof(input));
@@ -141,7 +147,7 @@ namespace CSparse.Double.Factorization
                 throw new ArgumentException(Resources.MatrixDimensions, nameof(result));
             }
 
-            input.CopyTo(result, 0);
+            input.CopyTo(result);
 
             DoSolve(result);
         }
@@ -176,7 +182,7 @@ namespace CSparse.Double.Factorization
             {
                 input.Column(j, C);
 
-                DoSolve(C);
+                DoSolve(C.AsSpan());
 
                 result.SetColumn(j, C);
             }
@@ -213,7 +219,7 @@ namespace CSparse.Double.Factorization
             }
         }
 
-        private void DoSolve(double[] result)
+        private void DoSolve(Span<double> result)
         {
             var values = LU.Values;
 

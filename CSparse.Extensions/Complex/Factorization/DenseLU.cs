@@ -132,6 +132,12 @@ namespace CSparse.Complex.Factorization
         /// <inheritdoc/>
         public void Solve(Complex[] input, Complex[] result)
         {
+            Solve(input.AsSpan(), result.AsSpan());
+        }
+
+        /// <inheritdoc/>
+        public void Solve(ReadOnlySpan<Complex> input, Span<Complex> result)
+        {
             if (input.Length < rows)
             {
                 throw new ArgumentException(Resources.MatrixDimensions, nameof(input));
@@ -142,7 +148,7 @@ namespace CSparse.Complex.Factorization
                 throw new ArgumentException(Resources.MatrixDimensions, nameof(result));
             }
 
-            input.CopyTo(result, 0);
+            input.CopyTo(result);
 
             DoSolve(result);
         }
@@ -177,7 +183,7 @@ namespace CSparse.Complex.Factorization
             {
                 input.Column(j, C);
 
-                DoSolve(C);
+                DoSolve(C.AsSpan());
 
                 result.SetColumn(j, C);
             }
@@ -214,7 +220,7 @@ namespace CSparse.Complex.Factorization
             }
         }
 
-        private void DoSolve(Complex[] result)
+        private void DoSolve(Span<Complex> result)
         {
             var values = LU.Values;
 

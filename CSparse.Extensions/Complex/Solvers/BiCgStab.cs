@@ -3,7 +3,7 @@ namespace CSparse.Complex.Solvers
 {
     using CSparse.Solvers;
     using System;
-    using System.Numerics;
+    using Complex = System.Numerics.Complex;
 
     /// <summary>
     /// BiCGStab algorithm.

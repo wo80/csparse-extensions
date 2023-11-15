@@ -1,4 +1,6 @@
-﻿namespace CSparse.Double.Factorization
+﻿using System;
+
+namespace CSparse.Double.Factorization
 {
     /// <summary>
     /// Helper methods for solving triangular systems
@@ -11,7 +13,7 @@
         /// <param name="size">The size of the matrices.</param>
         /// <param name="L">An n by n non-singular lower triangular matrix. Not modified.</param>
         /// <param name="b">A vector of length n. Modified.</param>
-        public static void SolveLower(int size, double[] L, double[] b)
+        public static void SolveLower(int size, double[] L, Span<double> b)
         {
             for (int i = 0; i < size; i++)
             {
@@ -31,7 +33,7 @@
         /// <param name="size">The size of the matrices.</param>
         /// <param name="L">An n by n non-singular lower triangular matrix. Not modified.</param>
         /// <param name="b">A vector of length n. Modified.</param>
-        public static void SolveLowerTranspose(int size, double[] L, double[] b)
+        public static void SolveLowerTranspose(int size, double[] L, Span<double> b)
         {
             for (int i = size - 1; i >= 0; i--)
             {
@@ -50,7 +52,7 @@
         /// <param name="size">The size of the matrices.</param>
         /// <param name="U">An n by n non-singular upper triangular matrix. Not modified.</param>
         /// <param name="b">A vector of length n. Modified.</param>
-        public static void SolveUpper(int size, double[] U, double[] b)
+        public static void SolveUpper(int size, double[] U, Span<double> b)
         {
             for (int i = size - 1; i >= 0; i--)
             {

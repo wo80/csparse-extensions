@@ -1,5 +1,6 @@
 ﻿namespace CSparse.Complex.Factorization
 {
+    using System;
     using System.Numerics;
 
     /// <summary>
@@ -13,7 +14,7 @@
         /// <param name="size">The size of the matrices.</param>
         /// <param name="L">An n by n non-singular lower triangular matrix. Not modified.</param>
         /// <param name="b">A vector of length n. Modified.</param>
-        public static void SolveLower(int size, Complex[] L, Complex[] b)
+        public static void SolveLower(int size, Complex[] L, Span<Complex> b)
         {
             for (int i = 0; i < size; i++)
             {
@@ -33,7 +34,7 @@
         /// <param name="size">The size of the matrices.</param>
         /// <param name="L">An n by n non-singular lower triangular matrix. Not modified.</param>
         /// <param name="b">A vector of length n. Modified.</param>
-        public static void SolveLowerTranspose(int size, Complex[] L, Complex[] b)
+        public static void SolveLowerTranspose(int size, Complex[] L, Span<Complex> b)
         {
             for (int i = size - 1; i >= 0; i--)
             {
@@ -52,7 +53,7 @@
         /// <param name="size">The size of the matrices.</param>
         /// <param name="U">An n by n non-singular upper triangular matrix. Not modified.</param>
         /// <param name="b">A vector of length n. Modified.</param>
-        public static void SolveUpper(int size, Complex[] U, Complex[] b)
+        public static void SolveUpper(int size, Complex[] U, Span<Complex> b)
         {
             for (int i = size - 1; i >= 0; i--)
             {
@@ -73,7 +74,7 @@
         /// <param name="size">The size of the matrices.</param>
         /// <param name="L">An n by n non-singular lower triangular matrix. Not modified.</param>
         /// <param name="b">A vector of length n. Modified.</param>
-        internal static void SolveLowerCholesky(int size, Complex[] L, Complex[] b)
+        internal static void SolveLowerCholesky(int size, Complex[] L, Span<Complex> b)
         {
             for (int i = size - 1; i >= 0; i--)
             {
@@ -95,7 +96,7 @@
         /// <param name="size">The size of the matrices.</param>
         /// <param name="L">An n by n non-singular lower triangular matrix. Not modified.</param>
         /// <param name="b">A vector of length n. Modified.</param>
-        internal static void SolveLowerTransposeCholesky(int size, Complex[] L, Complex[] b)
+        internal static void SolveLowerTransposeCholesky(int size, Complex[] L, Span<Complex> b)
         {
             for (int i = 0; i < size; i++)
             {

@@ -82,14 +82,16 @@ namespace CSparse.Complex.Factorization
             return new Complex(det * det, 0.0);
         }
 
-        /// <summary>
-        /// Solves a system of linear equations, <b>Ax = b</b>.
-        /// </summary>
-        /// <param name="input">The right hand side vector, <b>b</b>.</param>
-        /// <param name="result">The left hand side vector, <b>x</b>.</param>
+        /// <inheritdoc/>
         public void Solve(Complex[] input, Complex[] result)
         {
-            input.CopyTo(result, 0);
+            Solve(input.AsSpan(), result.AsSpan());
+        }
+
+        /// <inheritdoc/>
+        public void Solve(ReadOnlySpan<Complex> input, Span<Complex> result)
+        {
+            input.CopyTo(result);
 
             // solve L*y=b storing y in x
             DenseSolverHelper.SolveLower(size, L.Values, result);

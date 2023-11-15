@@ -3,7 +3,6 @@ namespace CSparse.Double.Factorization
 {
     using CSparse.Factorization;
     using CSparse.Properties;
-    using CSparse.Solvers;
     using CSparse.Storage;
     using System;
 
@@ -81,14 +80,16 @@ namespace CSparse.Double.Factorization
             return det * det;
         }
 
-        /// <summary>
-        /// Solves a system of linear equations, <b>Ax = b</b>.
-        /// </summary>
-        /// <param name="input">The right hand side vector, <b>b</b>.</param>
-        /// <param name="result">The left hand side vector, <b>x</b>.</param>
+        /// <inheritdoc/>
         public void Solve(double[] input, double[] result)
         {
-            input.CopyTo(result, 0);
+            Solve(input.AsSpan(), result.AsSpan());
+        }
+
+        /// <inheritdoc/>
+        public void Solve(ReadOnlySpan<double> input, Span<double> result)
+        {
+            input.CopyTo(result);
 
             // solve L*y=b storing y in x
             DenseSolverHelper.SolveLower(size, L.Values, result);
