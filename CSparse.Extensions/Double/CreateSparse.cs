@@ -23,7 +23,7 @@ namespace CSparse.Double
         {
             var A = new SparseMatrix(rows, columns);
             
-            A.ColumnPointers = new int[columns];
+            A.ColumnPointers = new int[columns + 1];
             A.RowIndices = new int[valueCount];
             A.Values = new double[valueCount];
 
@@ -114,7 +114,10 @@ namespace CSparse.Double
             for (int i = 0; i < rows; i++)
             {
                 // Make sure diagonal is set.
-                C.At(i, i, 1.0);
+                if (i < columns)
+                {
+                    C.At(i, i, 1.0);
+                }
 
                 for (int j = 0; j < nz; j++)
                 {

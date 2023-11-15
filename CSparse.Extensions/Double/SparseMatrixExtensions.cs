@@ -11,6 +11,16 @@ namespace CSparse.Double
     public static class SparseMatrixExtensions
     {
         /// <summary>
+        /// Adds a diagonal to this matrix A = A + Diag.
+        /// </summary>
+        /// <param name="matrix">The sparse matrix.</param>
+        /// <param name="diag">Array containing the matrix diagonal.</param>
+        public static void AddDiagonal(this CompressedColumnStorage<double> matrix, double[] diag)
+        {
+            AddDiagonal(matrix, diag, matrix);
+        }
+
+        /// <summary>
         /// Adds a diagonal matrix to a general sparse matrix B = A + Diag.
         /// </summary>
         /// <param name="matrix">The sparse matrix.</param>

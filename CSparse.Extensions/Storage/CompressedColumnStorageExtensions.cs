@@ -142,7 +142,7 @@
         /// <typeparam name="T"></typeparam>
         /// <param name="matrix">The matrix.</param>
         /// <param name="indices">The indices of the rows and columns to extract.</param>
-        /// <param name="target">The target sub matrix (has to provide enough mermory for the non-zeros).</param>
+        /// <param name="target">The target sub matrix (has to provide enough memory for the non-zeros).</param>
         /// <remarks>
         /// The indices have to be in order. The method also work, if only the lower part of the input matrix is passed.
         /// </remarks>

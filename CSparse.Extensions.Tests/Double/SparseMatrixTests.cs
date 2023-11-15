@@ -18,7 +18,7 @@ namespace CSparse.Tests.Double
                 0.0, 1.0
             });
 
-            A.AddDiagonal(diag, A);
+            A.AddDiagonal(diag);
 
             Assert.AreEqual(2.0, A.At(0, 0));
             Assert.AreEqual(2.0, A.At(1, 1));
@@ -31,7 +31,7 @@ namespace CSparse.Tests.Double
                 1.0, 0.0
             });
 
-            A.AddDiagonal(diag, A);
+            A.AddDiagonal(diag);
 
             Assert.AreEqual(1.0, A.At(0, 0));
             Assert.AreEqual(1.0, A.At(1, 1));
@@ -44,7 +44,7 @@ namespace CSparse.Tests.Double
                 0.0, 1.0, 0.5
             });
 
-            A.AddDiagonal(diag, A);
+            A.AddDiagonal(diag);
 
             Assert.AreEqual(2.0, A.At(0, 0));
             Assert.AreEqual(2.0, A.At(1, 1));
@@ -58,7 +58,7 @@ namespace CSparse.Tests.Double
                 1.0, 0.0, 0.5
             });
 
-            A.AddDiagonal(diag, A);
+            A.AddDiagonal(diag);
 
             Assert.AreEqual(1.0, A.At(0, 0));
             Assert.AreEqual(1.0, A.At(1, 1));
@@ -73,7 +73,7 @@ namespace CSparse.Tests.Double
                 0.5, 0.5
             });
 
-            A.AddDiagonal(diag, A);
+            A.AddDiagonal(diag);
 
             Assert.AreEqual(2.0, A.At(0, 0));
             Assert.AreEqual(2.0, A.At(1, 1));
@@ -88,7 +88,7 @@ namespace CSparse.Tests.Double
                 0.5, 0.5
             });
 
-            A.AddDiagonal(diag, A);
+            A.AddDiagonal(diag);
 
             Assert.AreEqual(1.0, A.At(0, 0));
             Assert.AreEqual(1.0, A.At(1, 1));
@@ -106,7 +106,7 @@ namespace CSparse.Tests.Double
 
             Assert.AreEqual(3, A.NonZerosCount);
 
-            A.AddDiagonal(diag, A);
+            A.AddDiagonal(diag);
 
             Assert.AreEqual(4, A.NonZerosCount);
         }
