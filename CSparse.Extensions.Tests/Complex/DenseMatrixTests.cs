@@ -24,8 +24,8 @@
             // Comparing complex arrays doesn't respect the floating point tolerance.
             //CollectionAssert.AreEqual(x, r);
 
-            CollectionAssert.AreEqual(x.Values.Select(a => a.Real), r.Values.Select(a => a.Real));
-            CollectionAssert.AreEqual(x.Values.Select(a => a.Imaginary), r.Values.Select(a => a.Imaginary));
+            Assert.That(r.Values.Select(a => a.Real), Is.EqualTo(x.Values.Select(a => a.Real)).AsCollection);
+            Assert.That(r.Values.Select(a => a.Imaginary), Is.EqualTo(x.Values.Select(a => a.Imaginary)).AsCollection);
         }
 
         [Test]
@@ -33,7 +33,7 @@
         {
             var A = DenseLUTests.GetMatrix();
 
-            Assert.AreEqual(24.5, A.Determinant().Real);
+            Assert.That(A.Determinant().Real, Is.EqualTo(24.5));
         }
 
         [Test]
@@ -47,7 +47,7 @@
 
             var eye = CreateDense.Eye(A.RowCount);
 
-            Assert.IsTrue(eye.Equals(A.Multiply(inv), 1e-12));
+            Assert.That(eye.Equals(A.Multiply(inv), 1e-12), Is.True);
         }
     }
 }

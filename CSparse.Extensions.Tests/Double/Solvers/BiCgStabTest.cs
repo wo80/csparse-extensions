@@ -33,7 +33,7 @@ namespace CSparse.Extensions.Tests.Double.Solvers
 
             solver.Solve(A, b, x, iterator, new MILU0(A));
 
-            Assert.AreEqual(IterationStatus.Converged, iterator.Status);
+            Assert.That(iterator.Status, Is.EqualTo(IterationStatus.Converged));
         }
 
         [Test]
@@ -59,7 +59,7 @@ namespace CSparse.Extensions.Tests.Double.Solvers
 
             solver.Solve(A, b, x, iterator, new MILU0(A, true));
 
-            Assert.AreEqual(IterationStatus.Converged, iterator.Status);
+            Assert.That(iterator.Status, Is.EqualTo(IterationStatus.Converged));
         }
     }
 }

@@ -19,7 +19,7 @@
             A.Multiply(x, b);
             A.Solve(b, r);
 
-            CollectionAssert.AreEqual(x.Values, r.Values);
+            Assert.That(r.Values, Is.EqualTo(x.Values).AsCollection);
         }
 
         [Test]
@@ -27,7 +27,7 @@
         {
             var A = DenseLUTests.GetMatrix();
 
-            Assert.AreEqual(17.25, A.Determinant());
+            Assert.That(A.Determinant(), Is.EqualTo(17.25));
         }
 
         [Test]
@@ -41,7 +41,7 @@
 
             var eye = CreateDense.Eye(A.RowCount);
 
-            Assert.IsTrue(eye.Equals(A.Multiply(inv), 1e-12));
+            Assert.That(eye.Equals(A.Multiply(inv), 1e-12), Is.True);
         }
     }
 }
