@@ -20,8 +20,8 @@ namespace CSparse.Tests.Double
 
             A.AddDiagonal(diag);
 
-            Assert.AreEqual(2.0, A.At(0, 0));
-            Assert.AreEqual(2.0, A.At(1, 1));
+            Assert.That(A.At(0, 0), Is.EqualTo(2.0));
+            Assert.That(A.At(1, 1), Is.EqualTo(2.0));
 
             // Test 2: square, missing diag
 
@@ -33,8 +33,8 @@ namespace CSparse.Tests.Double
 
             A.AddDiagonal(diag);
 
-            Assert.AreEqual(1.0, A.At(0, 0));
-            Assert.AreEqual(1.0, A.At(1, 1));
+            Assert.That(A.At(0, 0), Is.EqualTo(1.0));
+            Assert.That(A.At(1, 1), Is.EqualTo(1.0));
 
             // Test 3: columns > rows, full diag
 
@@ -46,9 +46,9 @@ namespace CSparse.Tests.Double
 
             A.AddDiagonal(diag);
 
-            Assert.AreEqual(2.0, A.At(0, 0));
-            Assert.AreEqual(2.0, A.At(1, 1));
-            Assert.AreEqual(0.5, A.At(1, 2));
+            Assert.That(A.At(0, 0), Is.EqualTo(2.0));
+            Assert.That(A.At(1, 1), Is.EqualTo(2.0));
+            Assert.That(A.At(1, 2), Is.EqualTo(0.5));
 
             // Test 4: columns > rows, missing diag
 
@@ -60,9 +60,9 @@ namespace CSparse.Tests.Double
 
             A.AddDiagonal(diag);
 
-            Assert.AreEqual(1.0, A.At(0, 0));
-            Assert.AreEqual(1.0, A.At(1, 1));
-            Assert.AreEqual(0.5, A.At(1, 2));
+            Assert.That(A.At(0, 0), Is.EqualTo(1.0));
+            Assert.That(A.At(1, 1), Is.EqualTo(1.0));
+            Assert.That(A.At(1, 2), Is.EqualTo(0.5));
 
             // Test 5: columns < rows, full diag
 
@@ -75,9 +75,9 @@ namespace CSparse.Tests.Double
 
             A.AddDiagonal(diag);
 
-            Assert.AreEqual(2.0, A.At(0, 0));
-            Assert.AreEqual(2.0, A.At(1, 1));
-            Assert.AreEqual(0.5, A.At(2, 1));
+            Assert.That(A.At(0, 0), Is.EqualTo(2.0));
+            Assert.That(A.At(1, 1), Is.EqualTo(2.0));
+            Assert.That(A.At(2, 1), Is.EqualTo(0.5));
 
             // Test 6: columns < rows, missing diag
 
@@ -90,9 +90,9 @@ namespace CSparse.Tests.Double
 
             A.AddDiagonal(diag);
 
-            Assert.AreEqual(1.0, A.At(0, 0));
-            Assert.AreEqual(1.0, A.At(1, 1));
-            Assert.AreEqual(0.5, A.At(2, 1));
+            Assert.That(A.At(0, 0), Is.EqualTo(1.0));
+            Assert.That(A.At(1, 1), Is.EqualTo(1.0));
+            Assert.That(A.At(2, 1), Is.EqualTo(0.5));
 
             // Test 7: explicit zeros
 
@@ -104,11 +104,11 @@ namespace CSparse.Tests.Double
                 1.0, 0.0
             });
 
-            Assert.AreEqual(3, A.NonZerosCount);
+            Assert.That(A.NonZerosCount, Is.EqualTo(3));
 
             A.AddDiagonal(diag);
 
-            Assert.AreEqual(4, A.NonZerosCount);
+            Assert.That(A.NonZerosCount, Is.EqualTo(4));
         }
 
         [Test]
@@ -128,8 +128,8 @@ namespace CSparse.Tests.Double
 
             var C = A.KroneckerProduct(B);
 
-            Assert.AreEqual(A.RowCount * B.RowCount, C.RowCount);
-            Assert.AreEqual(A.ColumnCount * B.ColumnCount, C.ColumnCount);
+            Assert.That(C.RowCount, Is.EqualTo(A.RowCount * B.RowCount));
+            Assert.That(C.ColumnCount, Is.EqualTo(A.ColumnCount * B.ColumnCount));
 
             var expected = SparseMatrix.OfRowMajor(4, 6, new double[]
             {
@@ -139,7 +139,7 @@ namespace CSparse.Tests.Double
                 0.0, 0.0, 0.0, 0.0, 1.0, 0.0
             });
 
-            Assert.IsTrue(expected.Equals(C));
+            Assert.That(expected.Equals(C), Is.True);
         }
     }
 }

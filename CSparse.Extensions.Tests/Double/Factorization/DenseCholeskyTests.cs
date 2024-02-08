@@ -33,7 +33,7 @@ namespace CSparse.Tests.Double.Factorization
 
             solver.Solve(b, r);
 
-            CollectionAssert.AreEqual(x, r);
+            Assert.That(r, Is.EqualTo(x).AsCollection);
         }
 
         [Test]
@@ -43,7 +43,7 @@ namespace CSparse.Tests.Double.Factorization
 
             var solver = DenseCholesky.Create(A);
 
-            Assert.AreEqual(56.0, solver.Determinant());
+            Assert.That(solver.Determinant(), Is.EqualTo(56.0));
         }
 
         [Test]
@@ -64,11 +64,11 @@ namespace CSparse.Tests.Double.Factorization
                 -0.0178571428571, 0.0624999999999,  0.2678571428571
             });
 
-            Assert.IsTrue(inv.Equals(expected, 1e-12));
+            Assert.That(inv.Equals(expected, 1e-12), Is.True);
 
             var eye = CreateDense.Eye(A.RowCount);
 
-            Assert.IsTrue(eye.Equals(A.Multiply(inv), 1e-12));
+            Assert.That(eye.Equals(A.Multiply(inv), 1e-12), Is.True);
         }
     }
 }

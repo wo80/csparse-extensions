@@ -38,8 +38,8 @@ namespace CSparse.Tests.Complex.Factorization
             // Comparing complex arrays doesn't respect the floating point tolerance.
             //CollectionAssert.AreEqual(x, r);
 
-            CollectionAssert.AreEqual(x.Select(a => a.Real), r.Select(a => a.Real));
-            CollectionAssert.AreEqual(x.Select(a => a.Imaginary), r.Select(a => a.Imaginary));
+            Assert.That(r.Select(a => a.Real), Is.EqualTo(x.Select(a => a.Real)).AsCollection);
+            Assert.That(r.Select(a => a.Imaginary), Is.EqualTo(x.Select(a => a.Imaginary)).AsCollection);
         }
 
         [Test]
@@ -49,7 +49,7 @@ namespace CSparse.Tests.Complex.Factorization
 
             var solver = DenseLU.Create(A);
 
-            Assert.AreEqual(24.5, solver.Determinant().Real);
+            Assert.That(solver.Determinant().Real, Is.EqualTo(24.5));
         }
 
         [Test]
@@ -65,7 +65,7 @@ namespace CSparse.Tests.Complex.Factorization
 
             var eye = CreateDense.Eye(A.RowCount);
 
-            Assert.IsTrue(eye.Equals(A.Multiply(inv), 1e-12));
+            Assert.That(eye.Equals(A.Multiply(inv), 1e-12), Is.True);
         }
 
         private static Complex C(double a, double b)

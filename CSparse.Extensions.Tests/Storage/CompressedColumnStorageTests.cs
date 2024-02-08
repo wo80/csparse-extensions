@@ -18,7 +18,7 @@ namespace CSparse.Tests.Storage
             });
 
             // Only 2 entries should be returned (zeros shouldn't be in the CSC storage).
-            Assert.AreEqual(2, A.Count((i, j, a) => a < 1.0));
+            Assert.That(A.Count((i, j, a) => a < 1.0), Is.EqualTo(2));
 
             var D = SparseMatrix.OfRowMajor(3, 3, new double[]
             {
@@ -28,7 +28,7 @@ namespace CSparse.Tests.Storage
             });
 
             // Check for non-diagonal entries.
-            Assert.AreEqual(0, D.Count((i, j, a) => i != j));
+            Assert.That(D.Count((i, j, a) => i != j), Is.EqualTo(0));
         }
         [Test]
         public void TestAnyPredicate()
@@ -42,7 +42,7 @@ namespace CSparse.Tests.Storage
 
             // Test if matrix is lower triangular by checking whether there
             // is any entry above the diagonal.
-            Assert.IsFalse(A.Any((i, j, a) => i < j));
+            Assert.That(A.Any((i, j, a) => i < j), Is.False);
         }
 
         [Test]
@@ -57,11 +57,11 @@ namespace CSparse.Tests.Storage
 
             var actual = A.EnumerateIndexed((i, j, a) => a < 1.0).ToArray();
 
-            Assert.AreEqual(1, actual.Length);
+            Assert.That(actual.Length, Is.EqualTo(1));
 
-            Assert.AreEqual(2, actual[0].Item1);
-            Assert.AreEqual(1, actual[0].Item2);
-            Assert.AreEqual(0.5, actual[0].Item3);
+            Assert.That(actual[0].Item1, Is.EqualTo(2));
+            Assert.That(actual[0].Item2, Is.EqualTo(1));
+            Assert.That(actual[0].Item3, Is.EqualTo(0.5));
         }
 
         [Test]
@@ -87,7 +87,7 @@ namespace CSparse.Tests.Storage
                 0.0, 3.4, 4.4
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 1");
+            Assert.That(actual.Equals(expected), Is.True, "test 1");
 
             // Test 2
 
@@ -110,7 +110,7 @@ namespace CSparse.Tests.Storage
                 0.0, 0.0, 0.0
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 2");
+            Assert.That(actual.Equals(expected), Is.True, "test 2");
 
             // Test 3
 
@@ -124,7 +124,7 @@ namespace CSparse.Tests.Storage
                 0.0, 0.0, 5.0, 0.0
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 3");
+            Assert.That(actual.Equals(expected), Is.True, "test 3");
 
             // Test 4
 
@@ -146,7 +146,7 @@ namespace CSparse.Tests.Storage
                 0.0, 3.4, 4.4
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 4");
+            Assert.That(actual.Equals(expected), Is.True, "test 4");
         }
 
         [Test]
@@ -170,7 +170,7 @@ namespace CSparse.Tests.Storage
                 2.3, 0.0
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 1");
+            Assert.That(actual.Equals(expected), Is.True, "test 1");
 
             // Test 2: row subset reversed and column subset in order.
 
@@ -182,7 +182,7 @@ namespace CSparse.Tests.Storage
                 0.0, 1.4
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 2");
+            Assert.That(actual.Equals(expected), Is.True, "test 2");
 
             // Test 3: row subset in order and column subset in reversed order.
 
@@ -194,7 +194,7 @@ namespace CSparse.Tests.Storage
                 0.0, 2.3
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 3");
+            Assert.That(actual.Equals(expected), Is.True, "test 3");
 
             // Test 4: all rows and column subset in order.
 
@@ -210,7 +210,7 @@ namespace CSparse.Tests.Storage
                 0.0, 4.3
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 4");
+            Assert.That(actual.Equals(expected), Is.True, "test 4");
 
             // Test 5: row subset in order and all columns.
 
@@ -222,7 +222,7 @@ namespace CSparse.Tests.Storage
                 0.0, 3.2, 3.3, 3.4
             });
 
-            Assert.IsTrue(actual.Equals(expected), "test 5");
+            Assert.That(actual.Equals(expected), Is.True, "test 5");
         }
 
         [Test]
@@ -248,7 +248,7 @@ namespace CSparse.Tests.Storage
 
             actual.EliminateSymmetric(new[] { 1, 4 });
 
-            Assert.IsTrue(actual.Equals(expected));
+            Assert.That(actual.Equals(expected), Is.True);
         }
     }
 }
