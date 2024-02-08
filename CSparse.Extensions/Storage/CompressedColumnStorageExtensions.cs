@@ -75,6 +75,32 @@
         }
 
         /// <summary>
+        /// Test whether the matrix is upper triangular.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="strict">If true, no diagonal entries are allowed.</param>
+        /// <returns></returns>
+        public static bool IsUpper<T>(this CompressedColumnStorage<T> matrix, bool strict = false)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            return strict ? !Any(matrix, (i, j, a) => i >= j) : !Any(matrix, (i, j, a) => i > j);
+        }
+
+        /// <summary>
+        /// Test whether the matrix is lower triangular.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="matrix">The matrix.</param>
+        /// <param name="strict">If true, no diagonal entries are allowed.</param>
+        /// <returns></returns>
+        public static bool IsLower<T>(this CompressedColumnStorage<T> matrix, bool strict = false)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            return strict ? !Any(matrix, (i, j, a) => i <= j) : !Any(matrix, (i, j, a) => i < j);
+        }
+
+        /// <summary>
         /// Enumerate all matrix entries that match the given predicate.
         /// </summary>
         /// <typeparam name="T"></typeparam>
