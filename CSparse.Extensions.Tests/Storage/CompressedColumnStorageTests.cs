@@ -30,6 +30,7 @@ namespace CSparse.Tests.Storage
             // Check for non-diagonal entries.
             Assert.That(D.Count((i, j, a) => i != j), Is.EqualTo(0));
         }
+
         [Test]
         public void TestAnyPredicate()
         {
@@ -43,6 +44,70 @@ namespace CSparse.Tests.Storage
             // Test if matrix is lower triangular by checking whether there
             // is any entry above the diagonal.
             Assert.That(A.Any((i, j, a) => i < j), Is.False);
+        }
+
+        [Test]
+        public void TestIsUpper()
+        {
+            var A = SparseMatrix.OfRowMajor(3, 3,
+            [
+                1.0, 0.0, 1.0,
+                0.0, 2.0, 0.0,
+                0.0, 0.0, 3.0
+            ]);
+
+            Assert.That(A.IsUpper(), Is.True);
+            Assert.That(A.IsUpper(true), Is.False);
+
+            A = SparseMatrix.OfRowMajor(3, 3,
+            [
+                0.0, 2.0, 1.0,
+                0.0, 0.0, 2.0,
+                0.0, 0.0, 0.0
+            ]);
+
+            Assert.That(A.IsUpper(true), Is.True);
+            
+            A = SparseMatrix.OfRowMajor(3, 3,
+            [
+                1.0, 0.0, 0.0,
+                0.0, 2.0, 0.0,
+                1.0, 0.0, 3.0
+            ]);
+
+            Assert.That(A.IsUpper(), Is.False);
+        }
+
+        [Test]
+        public void TestIsLower()
+        {
+            var A = SparseMatrix.OfRowMajor(3, 3,
+            [
+                1.0, 0.0, 0.0,
+                0.0, 2.0, 0.0,
+                1.0, 0.0, 3.0
+            ]);
+
+            Assert.That(A.IsLower(), Is.True);
+            Assert.That(A.IsLower(true), Is.False);
+
+            A = SparseMatrix.OfRowMajor(3, 3,
+            [
+                0.0, 0.0, 0.0,
+                2.0, 0.0, 0.0,
+                1.0, 2.0, 0.0
+            ]);
+
+            Assert.That(A.IsLower(true), Is.True);
+            
+            A = SparseMatrix.OfRowMajor(3, 3,
+            [
+                1.0, 0.0, 1.0,
+                0.0, 2.0, 0.0,
+                0.0, 0.0, 3.0
+            ]);
+
+            Assert.That(A.IsLower(), Is.False);
         }
 
         [Test]
