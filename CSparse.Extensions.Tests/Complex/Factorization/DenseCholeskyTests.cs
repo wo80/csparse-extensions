@@ -16,12 +16,12 @@ namespace CSparse.Tests.Complex.Factorization
             Complex w = new Complex(1.0, 0.5);
             Complex z = new Complex(0.0, 0.5);
 
-            return DenseMatrix.OfRowMajor(3, 3, new Complex[]
-            {
+            return DenseMatrix.OfRowMajor(3, 3,
+            [
                    v,    w,  z,
                  C(w),   v,  w,
                  C(z), C(w), v
-            }) as DenseMatrix;
+            ]) as DenseMatrix;
         }
 
         [Test]

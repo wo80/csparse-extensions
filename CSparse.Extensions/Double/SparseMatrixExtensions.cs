@@ -6,7 +6,7 @@ namespace CSparse.Double
     using System;
 
     /// <summary>
-    /// Sparse matrix extension methods.
+    /// <see cref="SparseMatrix"/> extension methods.
     /// </summary>
     public static class SparseMatrixExtensions
     {
@@ -27,8 +27,8 @@ namespace CSparse.Double
         /// <param name="diag">Array containing the matrix diagonal.</param>
         /// <param name="result">The resulting sparse matrix.</param>
         /// <remarks>
-        /// The <paramref name="result"/> matrix may be expanded slightly to allow for additions of
-        /// nonzero elements to previously non-existing diagonals.
+        /// The <paramref name="result"/> matrix storage may be expanded slightly to allow
+        /// for additions of nonzero elements to previously non-existing diagonals.
         /// </remarks>
         public static void AddDiagonal(this CompressedColumnStorage<double> matrix, double[] diag, CompressedColumnStorage<double> result)
         {

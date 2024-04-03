@@ -12,35 +12,31 @@ namespace CSparse.Complex.Factorization
     /// </summary>
     public class DenseLU : ISolver<Complex>
     {
-        /// <summary>
-        /// Compute the LU factorization of given matrix.
-        /// </summary>
-        /// <param name="matrix">The matrix to factorize.</param>
-        /// <exception cref="ArgumentException">If <paramref name="matrix"/> is not a square matrix.</exception>
-        public static DenseLU Create(DenseColumnMajorStorage<Complex> matrix)
-        {
-            var lu = new DenseLU(matrix.RowCount, matrix.ColumnCount);
-
-            lu.Factorize(matrix);
-
-            return lu;
-        }
-
         private readonly int rows;
         private readonly int columns;
 
-        private DenseColumnMajorStorage<Complex> LU;
+        private readonly DenseColumnMajorStorage<Complex> LU;
 
         // Row permutation (partial pivoting).
-        private int[] perm;
+        private readonly int[] perm;
 
         // Sign of the permutation (number of row interchanges even or odd).
         private int sign;
 
-        private Complex[] temp;
+        private readonly Complex[] temp;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="DenseCholesky"/> class.
+        /// Gets the number of rows.
+        /// </summary>
+        public int RowCount => rows;
+
+        /// <summary>
+        /// Gets the number of columns.
+        /// </summary>
+        public int ColumnCount => columns;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DenseLU"/> class.
         /// </summary>
         /// <param name="rows"></param>
         /// <param name="columns"></param>
@@ -57,6 +53,20 @@ namespace CSparse.Complex.Factorization
             LU = new DenseMatrix(rows, columns);
             perm = new int[rows];
             temp = new Complex[rows];
+        }
+
+        /// <summary>
+        /// Compute the LU factorization of given matrix.
+        /// </summary>
+        /// <param name="matrix">The matrix to factorize.</param>
+        /// <exception cref="ArgumentException">If <paramref name="matrix"/> is not a square matrix.</exception>
+        public static DenseLU Create(DenseColumnMajorStorage<Complex> matrix)
+        {
+            var lu = new DenseLU(matrix.RowCount, matrix.ColumnCount);
+
+            lu.Factorize(matrix);
+
+            return lu;
         }
 
         /// <summary>
@@ -154,11 +164,11 @@ namespace CSparse.Complex.Factorization
         }
 
         /// <summary>
-        /// Solves a system of linear equations, <b>AX = B</b>.
+        /// Solves a system of linear equations <b>AX = B</b>.
         /// </summary>
-        /// <param name="input">The right hand side <see cref="DenseMatrix"/>, <b>B</b>.</param>
-        /// <param name="result">The left hand side <see cref="DenseMatrix"/>, <b>X</b>.</param>
-        public void Solve(DenseMatrix input, DenseMatrix result)
+        /// <param name="input">The right hand side matrix <b>B</b>.</param>
+        /// <param name="result">The left hand side matrix <b>X</b>.</param>
+        public void Solve(DenseColumnMajorStorage<Complex> input, DenseColumnMajorStorage<Complex> result)
         {
             int columns = input.ColumnCount;
 
@@ -192,8 +202,8 @@ namespace CSparse.Complex.Factorization
         /// <summary>
         /// Compute the inverse using the current LU factorization.
         /// </summary>
-        /// <param name="target">The target matrix containing the inverse on output.</param>
-        public void Inverse(DenseMatrix target)
+        /// <param name="target">The target matrix containing the inverse on return.</param>
+        public void Inverse(DenseColumnMajorStorage<Complex> target)
         {
             if (target.RowCount != rows || target.ColumnCount != columns)
             {
