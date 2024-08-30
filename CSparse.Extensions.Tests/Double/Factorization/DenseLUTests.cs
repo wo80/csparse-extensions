@@ -8,14 +8,14 @@ namespace CSparse.Tests.Double.Factorization
     [DefaultFloatingPointTolerance(1e-12)]
     public class DenseLUTests
     {
-        private static DenseMatrix GetMatrix()
+        internal static DenseMatrix GetMatrix()
         {
-            return DenseMatrix.OfRowMajor(3, 3, new double[]
-            {
+            return DenseMatrix.OfRowMajor(3, 3,
+            [
                 4.0, -1.0,  0.5,
                 2.0,  3.0, -1.0,
                 1.5, -2.0,  2.0,
-            }) as DenseMatrix;
+            ]) as DenseMatrix;
         }
 
         [Test]
@@ -47,7 +47,7 @@ namespace CSparse.Tests.Double.Factorization
         }
 
         [Test]
-        public void TestInvert()
+        public void TestInverse()
         {
             var A = GetMatrix();
 
@@ -57,12 +57,12 @@ namespace CSparse.Tests.Double.Factorization
 
             solver.Inverse(inv);
 
-            var expected = DenseMatrix.OfRowMajor(3, 3, new double[]
-            {
+            var expected = DenseMatrix.OfRowMajor(3, 3,
+            [
                  0.2318840579710, 0.0579710144927, -0.0289855072464,
                 -0.3188405797101, 0.4202898550725,  0.2898550724638,
                 -0.4927536231884, 0.3768115942029,  0.8115942028986
-            });
+            ]);
 
             Assert.That(inv.Equals(expected, 1e-12), Is.True);
 

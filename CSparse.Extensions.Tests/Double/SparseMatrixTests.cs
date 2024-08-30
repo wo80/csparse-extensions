@@ -12,11 +12,11 @@ namespace CSparse.Tests.Double
 
             // Test 1: square, full diag
 
-            var A = SparseMatrix.OfRowMajor(2, 2, new double[]
-            {
+            var A = SparseMatrix.OfRowMajor(2, 2,
+            [
                 1.0, 1.0,
                 0.0, 1.0
-            });
+            ]);
 
             A.AddDiagonal(diag);
 
@@ -25,11 +25,11 @@ namespace CSparse.Tests.Double
 
             // Test 2: square, missing diag
 
-            A = SparseMatrix.OfRowMajor(2, 2, new double[]
-            {
+            A = SparseMatrix.OfRowMajor(2, 2,
+            [
                 0.0, 1.0,
                 1.0, 0.0
-            });
+            ]);
 
             A.AddDiagonal(diag);
 
@@ -38,11 +38,11 @@ namespace CSparse.Tests.Double
 
             // Test 3: columns > rows, full diag
 
-            A = SparseMatrix.OfRowMajor(2, 3, new double[]
-            {
+            A = SparseMatrix.OfRowMajor(2, 3,
+            [
                 1.0, 0.0, 0.5,
                 0.0, 1.0, 0.5
-            });
+            ]);
 
             A.AddDiagonal(diag);
 
@@ -52,11 +52,11 @@ namespace CSparse.Tests.Double
 
             // Test 4: columns > rows, missing diag
 
-            A = SparseMatrix.OfRowMajor(2, 3, new double[]
-            {
+            A = SparseMatrix.OfRowMajor(2, 3,
+            [
                 0.0, 1.0, 0.5,
                 1.0, 0.0, 0.5
-            });
+            ]);
 
             A.AddDiagonal(diag);
 
@@ -66,12 +66,12 @@ namespace CSparse.Tests.Double
 
             // Test 5: columns < rows, full diag
 
-            A = SparseMatrix.OfRowMajor(3, 2, new double[]
-            {
+            A = SparseMatrix.OfRowMajor(3, 2,
+            [
                 1.0, 0.0,
                 0.0, 1.0,
                 0.5, 0.5
-            });
+            ]);
 
             A.AddDiagonal(diag);
 
@@ -81,12 +81,12 @@ namespace CSparse.Tests.Double
 
             // Test 6: columns < rows, missing diag
 
-            A = SparseMatrix.OfRowMajor(3, 2, new double[]
-            {
+            A = SparseMatrix.OfRowMajor(3, 2,
+            [
                 0.0, 1.0,
                 1.0, 0.0,
                 0.5, 0.5
-            });
+            ]);
 
             A.AddDiagonal(diag);
 
@@ -96,13 +96,13 @@ namespace CSparse.Tests.Double
 
             // Test 7: explicit zeros
 
-            diag = new double[] { 0.0, 0.0 };
+            diag = [0.0, 0.0];
 
-            A = SparseMatrix.OfRowMajor(2, 2, new double[]
-            {
+            A = SparseMatrix.OfRowMajor(2, 2,
+            [
                 1.0, 1.0,
                 1.0, 0.0
-            });
+            ]);
 
             Assert.That(A.NonZerosCount, Is.EqualTo(3));
 
@@ -114,30 +114,30 @@ namespace CSparse.Tests.Double
         [Test]
         public void TestKroneckerProduct()
         {
-            var A = SparseMatrix.OfRowMajor(2, 2, new double[]
-            {
+            var A = SparseMatrix.OfRowMajor(2, 2,
+            [
                 2.0, 1.0,
                 0.0, 2.0
-            });
+            ]);
 
-            var B = SparseMatrix.OfRowMajor(2, 3, new double[]
-            {
+            var B = SparseMatrix.OfRowMajor(2, 3,
+            [
                 0.5, 1.0, 0.5,
                 0.0, 0.5, 0.0
-            });
+            ]);
 
             var C = A.KroneckerProduct(B);
 
             Assert.That(C.RowCount, Is.EqualTo(A.RowCount * B.RowCount));
             Assert.That(C.ColumnCount, Is.EqualTo(A.ColumnCount * B.ColumnCount));
 
-            var expected = SparseMatrix.OfRowMajor(4, 6, new double[]
-            {
+            var expected = SparseMatrix.OfRowMajor(4, 6,
+            [
                 1.0, 2.0, 1.0, 0.5, 1.0, 0.5,
                 0.0, 1.0, 0.0, 0.0, 0.5, 0.0,
                 0.0, 0.0, 0.0, 1.0, 2.0, 1.0,
                 0.0, 0.0, 0.0, 0.0, 1.0, 0.0
-            });
+            ]);
 
             Assert.That(expected.Equals(C), Is.True);
         }
