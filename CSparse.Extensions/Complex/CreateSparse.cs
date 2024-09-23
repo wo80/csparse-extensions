@@ -36,10 +36,18 @@ namespace CSparse.Complex
         /// </summary>
         /// <param name="size">The size of the matrix.</param>
         /// <returns>Sparse identity matrix.</returns>
-        public static SparseMatrix Eye(int size)
+        public static SparseMatrix Eye(int size) => Eye(size, Complex.One);
+
+        /// <summary>
+        /// Create a sparse diagonal matrix.
+        /// </summary>
+        /// <param name="size">The size of the matrix.</param>
+        /// <param name="value">The diagonal value.</param>
+        /// <returns>Sparse diagonal matrix.</returns>
+        public static SparseMatrix Eye(int size, Complex value)
         {
             var A = new SparseMatrix(size, size, size);
-            
+
             var ap = A.ColumnPointers;
             var ai = A.RowIndices;
             var ax = A.Values;
@@ -48,7 +56,7 @@ namespace CSparse.Complex
             {
                 ap[i] = i;
                 ai[i] = i;
-                ax[i] = Complex.One;
+                ax[i] = value;
             }
 
             ap[size] = size;

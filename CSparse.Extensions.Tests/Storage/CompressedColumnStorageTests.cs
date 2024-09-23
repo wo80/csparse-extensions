@@ -315,5 +315,95 @@ namespace CSparse.Tests.Storage
 
             Assert.That(actual.Equals(expected), Is.True);
         }
+
+        [Test]
+        public void TestAppend()
+        {
+            var A = SparseMatrix.OfRowMajor(3, 2,
+            [
+                1, 0,
+                0, 1,
+                1, 1
+            ]);
+
+            var B = SparseMatrix.OfRowMajor(3, 1,
+            [
+                2,
+                0,
+                2
+            ]);
+
+            var actual = A.ConcatHorizontal(B);
+
+            var expected = SparseMatrix.OfRowMajor(3, 3,
+            [
+                1, 0, 2,
+                0, 1, 0,
+                1, 1, 2
+            ]);
+
+            Assert.That(actual.Equals(expected), Is.True);
+        }
+
+        [Test]
+        public void TestStack()
+        {
+            var A = SparseMatrix.OfRowMajor(2, 3,
+            [
+                1, 0, 1,
+                0, 1, 1
+            ]);
+
+            var B = SparseMatrix.OfRowMajor(1, 3,
+            [
+                2, 0, 2
+            ]);
+
+            var actual = A.ConcatVertical(B);
+
+            var expected = SparseMatrix.OfRowMajor(3, 3,
+            [
+                1, 0, 1,
+                0, 1, 1,
+                2, 0, 2
+            ]);
+
+            Assert.That(actual.Equals(expected), Is.True);
+        }
+
+        [Test]
+        public void TestAugment()
+        {
+            var A = SparseMatrix.OfRowMajor(2, 3,
+            [
+                1, 2, 3,
+                4, 5, 6
+            ]);
+
+            int nrow = A.RowCount;
+            int ncol = A.ColumnCount;
+
+            // Augmented matrix [I A ; A' 0]
+
+            var In = CreateSparse.Eye(nrow);
+            var Im = CreateSparse.Zeros(ncol, ncol);
+            var At = A.Transpose();
+
+            var A1 = In.ConcatHorizontal(A);
+            var A2 = At.ConcatHorizontal(Im);
+
+            var actual = A1.ConcatVertical(A2);
+
+            var expected = SparseMatrix.OfRowMajor(5, 5,
+            [
+                1, 0, 1, 2, 3,
+                0, 1, 4, 5, 6,
+                1, 4, 0, 0, 0,
+                2, 5, 0, 0, 0,
+                3, 6, 0, 0, 0,
+            ]);
+
+            Assert.That(actual.Equals(expected), Is.True);
+        }
     }
 }

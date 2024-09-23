@@ -35,10 +35,18 @@ namespace CSparse.Double
         /// </summary>
         /// <param name="size">The size of the matrix.</param>
         /// <returns>Sparse identity matrix.</returns>
-        public static SparseMatrix Eye(int size)
+        public static SparseMatrix Eye(int size) => Eye(size, 1.0);
+
+        /// <summary>
+        /// Create a sparse diagonal matrix.
+        /// </summary>
+        /// <param name="size">The size of the matrix.</param>
+        /// <param name="value">The diagonal value.</param>
+        /// <returns>Sparse diagonal matrix.</returns>
+        public static SparseMatrix Eye(int size, double value)
         {
             var A = new SparseMatrix(size, size, size);
-            
+
             var ap = A.ColumnPointers;
             var ai = A.RowIndices;
             var ax = A.Values;
@@ -47,7 +55,7 @@ namespace CSparse.Double
             {
                 ap[i] = i;
                 ai[i] = i;
-                ax[i] = 1.0;
+                ax[i] = value;
             }
 
             ap[size] = size;
