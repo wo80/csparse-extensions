@@ -2,19 +2,145 @@
 {
     using CSparse.Complex;
     using NUnit.Framework;
+    using System.Numerics;
 
     public class SparseMatrixTests
     {
         [Test]
         public void TestAddDiagonal()
         {
-            Assert.Pass();
+            var diag = new Complex[] { 1.0, 1.0 };
+
+            // Test 1: square, full diag
+
+            var A = SparseMatrix.OfRowMajor(2, 2,
+            [
+                1.0, 1.0,
+                0.0, 1.0
+            ]);
+
+            A.AddDiagonal(diag);
+
+            Assert.That(A.At(0, 0), Is.EqualTo((Complex)2.0));
+            Assert.That(A.At(1, 1), Is.EqualTo((Complex)2.0));
+
+            // Test 2: square, missing diag
+
+            A = SparseMatrix.OfRowMajor(2, 2,
+            [
+                0.0, 1.0,
+                1.0, 0.0
+            ]);
+
+            A.AddDiagonal(diag);
+
+            Assert.That(A.At(0, 0), Is.EqualTo((Complex)1.0));
+            Assert.That(A.At(1, 1), Is.EqualTo((Complex)1.0));
+
+            // Test 3: columns > rows, full diag
+
+            A = SparseMatrix.OfRowMajor(2, 3,
+            [
+                1.0, 0.0, 0.5,
+                0.0, 1.0, 0.5
+            ]);
+
+            A.AddDiagonal(diag);
+
+            Assert.That(A.At(0, 0), Is.EqualTo((Complex)2.0));
+            Assert.That(A.At(1, 1), Is.EqualTo((Complex)2.0));
+            Assert.That(A.At(1, 2), Is.EqualTo((Complex)0.5));
+
+            // Test 4: columns > rows, missing diag
+
+            A = SparseMatrix.OfRowMajor(2, 3,
+            [
+                0.0, 1.0, 0.5,
+                1.0, 0.0, 0.5
+            ]);
+
+            A.AddDiagonal(diag);
+
+            Assert.That(A.At(0, 0), Is.EqualTo((Complex)1.0));
+            Assert.That(A.At(1, 1), Is.EqualTo((Complex)1.0));
+            Assert.That(A.At(1, 2), Is.EqualTo((Complex)0.5));
+
+            // Test 5: columns < rows, full diag
+
+            A = SparseMatrix.OfRowMajor(3, 2,
+            [
+                1.0, 0.0,
+                0.0, 1.0,
+                0.5, 0.5
+            ]);
+
+            A.AddDiagonal(diag);
+
+            Assert.That(A.At(0, 0), Is.EqualTo((Complex)2.0));
+            Assert.That(A.At(1, 1), Is.EqualTo((Complex)2.0));
+            Assert.That(A.At(2, 1), Is.EqualTo((Complex)0.5));
+
+            // Test 6: columns < rows, missing diag
+
+            A = SparseMatrix.OfRowMajor(3, 2,
+            [
+                0.0, 1.0,
+                1.0, 0.0,
+                0.5, 0.5
+            ]);
+
+            A.AddDiagonal(diag);
+
+            Assert.That(A.At(0, 0), Is.EqualTo((Complex)1.0));
+            Assert.That(A.At(1, 1), Is.EqualTo((Complex)1.0));
+            Assert.That(A.At(2, 1), Is.EqualTo((Complex)0.5));
+
+            // Test 7: explicit zeros
+
+            diag = [0.0, 0.0];
+
+            A = SparseMatrix.OfRowMajor(2, 2,
+            [
+                1.0, 1.0,
+                1.0, 0.0
+            ]);
+
+            Assert.That(A.NonZerosCount, Is.EqualTo(3));
+
+            A.AddDiagonal(diag);
+
+            Assert.That(A.NonZerosCount, Is.EqualTo(4));
         }
 
         [Test]
         public void TestKroneckerProduct()
         {
-            Assert.Pass();
+            var A = SparseMatrix.OfRowMajor(2, 2,
+            [
+                2.0, 1.0,
+                0.0, 2.0
+            ]);
+
+            var B = SparseMatrix.OfRowMajor(2, 3,
+            [
+                0.5, 1.0, 0.5,
+                0.0, 0.5, 0.0
+            ]);
+
+            var C = A.KroneckerProduct(B);
+
+            Assert.That(C.RowCount, Is.EqualTo(A.RowCount * B.RowCount));
+            Assert.That(C.ColumnCount, Is.EqualTo(A.ColumnCount * B.ColumnCount));
+
+            var expected = SparseMatrix.OfRowMajor(4, 6,
+            [
+                1.0, 2.0, 1.0, 0.5, 1.0, 0.5,
+                0.0, 1.0, 0.0, 0.0, 0.5, 0.0,
+                0.0, 0.0, 0.0, 1.0, 2.0, 1.0,
+                0.0, 0.0, 0.0, 0.0, 1.0, 0.0
+            ]);
+
+            Assert.That(expected.Equals(C), Is.True);
         }
     }
 }

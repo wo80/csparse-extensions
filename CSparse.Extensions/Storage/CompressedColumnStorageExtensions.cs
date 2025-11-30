@@ -373,6 +373,197 @@
             matrix.DropZeros();
         }
 
+        /// <summary>
+        /// Concatenate matrices horizontally C = [A , B]
+        /// </summary>
+        /// <param name="matrix">The matrix A.</param>
+        /// <param name="other">The other matrix B.</param>
+        /// <returns>The concatenated matrix C.</returns>
+        public static CompressedColumnStorage<T> ConcatHorizontal<T>(this CompressedColumnStorage<T> matrix, CompressedColumnStorage<T> other)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            if (matrix.RowCount != other.RowCount)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions, nameof(other));
+            }
+
+            var target = Create<T>(matrix.RowCount, matrix.ColumnCount + other.ColumnCount, matrix.NonZerosCount + other.NonZerosCount);
+
+            ConcatHorizontal(matrix, other, target);
+
+            return target;
+        }
+
+        /// <summary>
+        /// Concatenate matrices horizontally C = [A , B] (append columns of B to A).
+        /// </summary>
+        /// <param name="matrix">The matrix A.</param>
+        /// <param name="other">The other matrix B.</param>
+        /// <param name="target">The target matrix C.</param>
+        public static void ConcatHorizontal<T>(this CompressedColumnStorage<T> matrix, CompressedColumnStorage<T> other, CompressedColumnStorage<T> target)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            var ap = matrix.ColumnPointers;
+            var ai = matrix.RowIndices;
+            var ax = matrix.Values;
+            int ancol = matrix.ColumnCount;
+
+            var bp = other.ColumnPointers;
+            var bi = other.RowIndices;
+            var bx = other.Values;
+            int bncol = other.ColumnCount;
+
+            var cp = target.ColumnPointers;
+            var ci = target.RowIndices;
+            var cx = target.Values;
+            int ncol = target.ColumnCount;
+
+            if (target.RowCount != matrix.RowCount)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions, nameof(matrix));
+            }
+
+            if (target.RowCount != other.RowCount)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions, nameof(other));
+            }
+
+            if (target.RowIndices.Length < matrix.NonZerosCount + other.NonZerosCount)
+            {
+                throw new ArgumentException("Specified target does not provide enough memory.", nameof(target));
+            }
+
+            if (target.Values.Length < matrix.NonZerosCount + other.NonZerosCount)
+            {
+                throw new ArgumentException("Specified target does not provide enough memory.", nameof(target));
+            }
+
+            int pc = 0;
+
+            // copy A as the first A->ncol columns of C
+            for (int j = 0; j < ancol; j++)
+            {
+                // A(:,j) is the jth column of C
+                int p = ap[j];
+                int pend = ap[j + 1];
+                cp[j] = pc;
+                for (; p < pend; p++)
+                {
+                    ci[pc] = ai[p];
+                    cx[pc] = ax[p];
+                    pc++;
+                }
+            }
+
+            // copy B as the next B->ncol columns of C
+            for (int j = 0; j < bncol; j++)
+            {
+                // B(:,j) is the (ancol+j)th column of C
+                int p = bp[j];
+                int pend = bp[j + 1];
+                cp[ancol + j] = pc;
+                for (; p < pend; p++)
+                {
+                    ci[pc] = bi[p];
+                    cx[pc] = bx[p];
+                    pc++;
+                }
+            }
+            cp[ncol] = pc;
+        }
+
+        /// <summary>
+        /// Concatenate matrices vertically C = [A ; B] (append rows of B to A).
+        /// </summary>
+        /// <param name="matrix">The matrix A.</param>
+        /// <param name="other">The other matrix B.</param>
+        /// <returns>The concatenated matrix C.</returns>
+        public static CompressedColumnStorage<T> ConcatVertical<T>(this CompressedColumnStorage<T> matrix, CompressedColumnStorage<T> other)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            if (matrix.ColumnCount != other.ColumnCount)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions, nameof(other));
+            }
+
+            var target = Create<T>(matrix.RowCount + other.RowCount, matrix.ColumnCount, matrix.NonZerosCount + other.NonZerosCount);
+
+            ConcatVertical(matrix, other, target);
+
+            return target;
+        }
+
+        /// <summary>
+        /// Concatenate matrices vertically C = [A ; B]
+        /// </summary>
+        /// <param name="matrix">The matrix A.</param>
+        /// <param name="other">The other matrix B.</param>
+        /// <param name="target">The target matrix C.</param>
+        public static void ConcatVertical<T>(this CompressedColumnStorage<T> matrix, CompressedColumnStorage<T> other, CompressedColumnStorage<T> target)
+            where T : struct, IEquatable<T>, IFormattable
+        {
+            var ap = matrix.ColumnPointers;
+            var ai = matrix.RowIndices;
+            var ax = matrix.Values;
+            int anrow = matrix.RowCount;
+
+            var bp = other.ColumnPointers;
+            var bi = other.RowIndices;
+            var bx = other.Values;
+
+            var cp = target.ColumnPointers;
+            var ci = target.RowIndices;
+            var cx = target.Values;
+            int ncol = target.ColumnCount;
+
+            if (ncol != matrix.ColumnCount)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions, nameof(matrix));
+            }
+
+            if (ncol != other.ColumnCount)
+            {
+                throw new ArgumentException(Resources.MatrixDimensions, nameof(other));
+            }
+
+            if (target.RowIndices.Length < matrix.NonZerosCount + other.NonZerosCount)
+            {
+                throw new ArgumentException("Specified target does not provide enough memory.", nameof(target));
+            }
+
+            if (target.Values.Length < matrix.NonZerosCount + other.NonZerosCount)
+            {
+                throw new ArgumentException("Specified target does not provide enough memory.", nameof(target));
+            }
+
+            int pc = 0;
+
+            for (int j = 0; j < ncol; j++)
+            {
+                // append A(:,j) as the first part of C(:,j)
+                int p = ap[j];
+                int pend = ap[j + 1];
+                cp[j] = pc;
+                for (; p < pend; p++)
+                {
+                    ci[pc] = ai[p];
+                    cx[pc] = ax[p];
+                    pc++;
+                }
+
+                // append B(:,j) as the second part of C(:,j)
+                p = bp[j];
+                pend = bp[j + 1];
+                for (; p < pend; p++)
+                {
+                    ci[pc] = bi[p] + anrow;
+                    cx[pc] = bx[p];
+                    pc++;
+                }
+            }
+            cp[ncol] = pc;
+        }
+
         internal static CompressedColumnStorage<T> Create<T>(int rowCount, int columnCount, int valueCount)
             where T : struct, IEquatable<T>, IFormattable
         {
